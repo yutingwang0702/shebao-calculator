@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>各城市社保公积金成本测算工具</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","微软雅黑",-apple-system,Helvetica,Arial,sans-serif;
+         background:#f4f6fa; color:#1f2430; font-size:14px; }
+  header { background:#1f6feb; color:#fff; padding:16px 24px; }
+  header h1 { margin:0; font-size:18px; font-weight:600; }
+  header p { margin:4px 0 0; font-size:12px; opacity:.85; }
+  .wrap { max-width:980px; margin:18px auto; padding:0 16px; }
+  .tabs { display:flex; gap:6px; margin-bottom:16px; }
+  .tab { padding:10px 22px; background:#e6ebf3; color:#5a6172; cursor:pointer; font-weight:600; border-radius:8px 8px 0 0; }
+  .tab:hover { background:#d7deea; }
+  .tab.active { background:#1f6feb; color:#fff; box-shadow:0 2px 6px rgba(31,111,235,.25); }
+  .card { background:#fff; border-radius:10px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,.06); margin-bottom:16px; }
+  .form-row { display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:12px; color:#5a6172; }
+  select, input { padding:9px 10px; border:1px solid #ccd4e0; border-radius:8px; font-size:14px; background:#fff; min-width:160px; }
+  input { min-width:200px; }
+  button.primary { background:#1f6feb; color:#fff; border:none; padding:10px 22px; border-radius:8px; font-size:14px; cursor:pointer; font-weight:600; }
+  button.primary:hover { background:#185fce; }
+  button.ghost { background:#fff; color:#1f6feb; border:1px solid #1f6feb; padding:9px 16px; border-radius:8px; cursor:pointer; font-size:13px; }
+  .hidden { display:none; }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:6px 0 4px; }
+  .stat { background:#f7f9fc; border:1px solid #e6ebf3; border-radius:10px; padding:14px; text-align:center; }
+  .stat .k { font-size:12px; color:#5a6172; }
+  .stat .v { font-size:22px; font-weight:700; color:#1f2430; margin-top:6px; }
+  .stat .v.blue { color:#1f6feb; }
+  .stat .v.green { color:#0a8f4f; }
+  .sub { font-size:12px; color:#5a6172; margin:8px 0 0; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+  th, td { padding:9px 10px; border-bottom:1px solid #eef1f6; text-align:right; }
+  th:first-child, td:first-child { text-align:left; }
+  #rate-table th:nth-child(2), #rate-table td:nth-child(2) { text-align:left; }
+  th { background:#f7f9fc; color:#5a6172; font-weight:600; }
+  tr.disabled td { color:#9aa3b2; }
+  .note { background:#fff8e6; border:1px solid #ffe2a8; border-radius:8px; padding:10px 12px; font-size:12px; color:#7a5b00; margin-top:12px; line-height:1.6; }
+  .actions { margin-top:12px; display:flex; gap:10px; }
+  .err { color:#c0392b; font-size:13px; margin-top:8px; }
+  footer { text-align:center; color:#9aa3b2; font-size:12px; padding:18px; }
+  .pill { display:inline-block; background:#eaf1ff; color:#1f6feb; border-radius:20px; padding:2px 10px; font-size:12px; margin-left:6px; }
+  #toast { position:fixed; left:50%; bottom:32px; transform:translateX(-50%) translateY(20px);
+           background:#1f2430; color:#fff; padding:10px 18px; border-radius:8px; font-size:14px;
+           opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:99; box-shadow:0 4px 14px rgba(0,0,0,.2); max-width:90%; text-align:center; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .lock { max-width:440px; margin:6px auto; text-align:center; }
+  .lock .field { align-items:center; }
+  .lock input { text-align:center; letter-spacing:3px; min-width:240px; }
+  #drop { border:2px dashed #ccd4e0; border-radius:10px; padding:24px; text-align:center; color:#5a6172; cursor:pointer; background:#fafbfe; }
+  #drop:hover { border-color:#1f6feb; color:#1f6feb; }
+  .pwderr { color:#c0392b; font-size:13px; margin-top:10px; }
+  .field input.nv { min-width:130px; }
+  h3 { margin:0 0 4px; font-size:15px; }
+  .history-item { padding:10px 12px; border:1px solid #e6ebf3; border-radius:8px; margin-bottom:8px; background:#fafbfe; }
+  .history-item .hi-head { display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+  .history-item .hi-meta { color:#5a6172; font-size:12px; margin-top:4px; }
+  .history-item .hi-actions { margin-top:8px; }
+  .history-item button { padding:4px 10px; font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>各城市社保公积金成本测算工具</h1>
+  <p>HRBP 候选人社保公积金粗略测算 · 纯前端计算，参数不上传服务器 <span class="pill" id="ver-badge">数据版本 v1</span></p>
+</header>
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" id="tab-calc" onclick="switchTab('calc')">成本测算</div>
+    <div class="tab" id="tab-rate" onclick="switchTab('rate')">费率速查</div>
+    <div class="tab" id="tab-admin" onclick="switchTab('admin')">数据管理</div>
+  </div>
+
+  <div id="view-calc">
+    <div class="card">
+      <div class="form-row">
+        <div class="field">
+          <label>参保城市</label>
+          <select id="city"></select>
+        </div>
+        <div class="field hidden" id="scheme-field">
+          <label>参保方案（户籍）</label>
+          <select id="scheme"></select>
+        </div>
+        <div class="field">
+          <label>月度税前工资（元）</label>
+          <input id="salary" type="number" placeholder="如 20000" min="0" step="0.01">
+        </div>
+        <button class="primary" onclick="run()">测算</button>
+      </div>
+      <div id="err" class="err"></div>
+    </div>
+
+    <div class="card hidden" id="result">
+      <div class="stats">
+        <div class="stat"><div class="k">社保公积金 公司比例（名义）</div><div class="v blue" id="r-comp-rate">—</div></div>
+        <div class="stat"><div class="k">社保公积金 个人比例（名义）</div><div class="v blue" id="r-pers-rate">—</div></div>
+        <div class="stat"><div class="k">社保公积金 单位合计</div><div class="v green" id="r-comp-amt">—</div></div>
+        <div class="stat"><div class="k">社保公积金 个人合计</div><div class="v green" id="r-pers-amt">—</div></div>
+      </div>
+      <div class="sub" id="r-summary"></div>
+      <table id="detail">
+        <thead><tr><th>险种</th><th>缴费基数</th><th>单位比例</th><th>单位金额</th><th>个人比例</th><th>个人金额</th><th>备注</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="note" id="r-note"></div>
+      <div class="actions">
+        <button class="ghost" onclick="exportCSV()">导出明细 CSV</button>
+        <button class="ghost" onclick="copyResult()">复制结果文本</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-rate" class="hidden">
+    <div class="card">
+      <table id="rate-table">
+        <thead><tr><th>城市</th><th>参保方案</th><th>公司名义比例</th><th>个人名义比例</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="note">名义比例 = 各险种单位/个人比例简单加总（不含固定额，未卡上下限），仅供快速比对；实际负担请以「成本测算」页的合计金额为准。</div>
+    </div>
+  </div>
+
+  <div id="view-admin" class="hidden">
+    <div class="card">
+      <h3>数据管理（社保专员）</h3>
+      <p class="sub">用于上传新一期各地社保公积金规则，重新生成测算工具。仅社保专员可操作。</p>
+      <div id="admin-lock" class="lock">
+        <div class="field" style="align-items:center;">
+          <label>请输入数据管理密码</label>
+          <input id="admin-pwd" type="password" placeholder="密码" onkeydown="if(event.key==='Enter')unlockAdmin()">
+        </div>
+        <div class="actions" style="justify-content:center;margin-top:12px;">
+          <button class="primary" onclick="unlockAdmin()">解锁</button>
+        </div>
+        <div id="admin-pwderr" class="pwderr"></div>
+      </div>
+
+      <div id="admin-panel" class="hidden">
+        <div class="actions" style="margin-bottom:10px;">
+          <button class="ghost" onclick="downloadTemplate()">下载 CSV 模板</button>
+        </div>
+        <div id="drop">把规则 CSV 拖到这里，或点击选择文件</div>
+        <input id="file" type="file" accept=".csv" class="hidden">
+        <div id="preview" class="sub hidden"></div>
+        <div id="admin-form" class="hidden">
+          <div class="form-row" style="margin-top:12px;">
+            <div class="field"><label>新版本号</label><input id="nv" class="nv" placeholder="v2"></div>
+            <div class="field"><label>生效区间</label><input id="neff" placeholder="2026.07–2027.06"></div>
+          </div>
+          <div class="field" style="margin-top:10px;width:100%;">
+            <label>变更说明</label>
+            <input id="nnote" style="min-width:100%;" placeholder="如：更新北京/上海比例，新增 xx 城">
+          </div>
+          <div class="actions">
+            <button class="primary" onclick="adminGenerate()">生成并下载 index.html</button>
+          </div>
+        </div>
+        <div id="admin-err" class="err"></div>
+
+        <div id="upload-history" style="margin-top:24px;">
+          <h3>上传记录</h3>
+          <div id="history-list" class="sub">暂无上传记录</div>
+        </div>
+
+        <details class="card" id="ver-box" style="margin-top:20px;">
+          <summary style="cursor:pointer;font-weight:600;color:#1f6feb;">📌 数据版本与更新记录</summary>
+          <div id="ver-list" style="margin-top:10px;font-size:13px;"></div>
+        </details>
+      </div>
+    </div>
+    <div class="note">操作说明：① 先点「下载 CSV 模板」查看必填列与示例；② 解锁后把规则 CSV 拖入虚线框（列：城市,方案,险种,下限,上限,单位比例,个人比例,单位固定,个人固定，共 9 列）；③ 系统自动校验并预填下一版本号；④ 点「生成并下载」得到新的 index.html，发给部署同学重新部署即全员生效；⑤ 每次成功生成都会在本页留下「上传记录」，可查看时间、版本、变更说明并下载原始 CSV。本页计算与上传均在浏览器本地完成，参数不上服务器。</div>
+  </div>
+</div>
+<footer>本工具仅供候选人社保公积金粗略估算，不构成薪资最终核算依据；个税未计入。<span id="ver-foot"></span></footer>
+<div id="toast"></div>
+
+<script>
+const PAYLOAD = {"data": {"福州": {"STANDARD": [{"city": "福州", "scheme": "STANDARD", "type": "养老", "lower": 4043.0, "upper": 22607.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "福州", "scheme": "STANDARD", "type": "失业", "lower": 4043.0, "upper": 22164.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "福州", "scheme": "STANDARD", "type": "工伤", "lower": 4414.0, "upper": 22070.0, "company_rate": 0.007, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "福州", "scheme": "STANDARD", "type": "医疗", "lower": 4579.0, "upper": 22893.0, "company_rate": 0.08, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "福州", "scheme": "STANDARD", "type": "生育", "lower": 4043.0, "upper": 22607.0, "company_rate": 0.007, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "福州", "scheme": "STANDARD", "type": "公积金", "lower": 2195.0, "upper": 32430.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}]}, "北京": {"STANDARD": [{"city": "北京", "scheme": "STANDARD", "type": "养老", "lower": 7162.0, "upper": 35811.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "北京", "scheme": "STANDARD", "type": "失业", "lower": 7162.0, "upper": 35811.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "北京", "scheme": "STANDARD", "type": "工伤", "lower": 7162.0, "upper": 35811.0, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "北京", "scheme": "STANDARD", "type": "医疗", "lower": 7162.0, "upper": 35811.0, "company_rate": 0.098, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 3.0, "source": "同养老", "enabled": true}, {"city": "北京", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "北京", "scheme": "STANDARD", "type": "公积金", "lower": 2540.0, "upper": 35811.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "苏州": {"STANDARD": [{"city": "苏州", "scheme": "STANDARD", "type": "养老", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "苏州", "scheme": "STANDARD", "type": "失业", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "苏州", "scheme": "STANDARD", "type": "工伤", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "苏州", "scheme": "STANDARD", "type": "医疗", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.07, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 5.0, "source": "同养老", "enabled": true}, {"city": "苏州", "scheme": "STANDARD", "type": "生育", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.008, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "苏州", "scheme": "STANDARD", "type": "公积金", "lower": 4952.0, "upper": 40600.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "南京": {"STANDARD": [{"city": "南京", "scheme": "STANDARD", "type": "养老", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "南京", "scheme": "STANDARD", "type": "失业", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "南京", "scheme": "STANDARD", "type": "工伤", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "南京", "scheme": "STANDARD", "type": "医疗", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.07, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 10.0, "source": "同养老", "enabled": true}, {"city": "南京", "scheme": "STANDARD", "type": "生育", "lower": 4952.0, "upper": 24762.0, "company_rate": 0.008, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "南京", "scheme": "STANDARD", "type": "公积金", "lower": 2660.0, "upper": 42400.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "成都": {"STANDARD": [{"city": "成都", "scheme": "STANDARD", "type": "养老", "lower": 4588.0, "upper": 22938.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "成都", "scheme": "STANDARD", "type": "失业", "lower": 4588.0, "upper": 22938.0, "company_rate": 0.006, "personal_rate": 0.004, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "成都", "scheme": "STANDARD", "type": "工伤", "lower": 4588.0, "upper": 22938.0, "company_rate": 0.0024, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "澄清(0.24%)", "enabled": true}, {"city": "成都", "scheme": "STANDARD", "type": "医疗", "lower": 4588.0, "upper": 22938.0, "company_rate": 0.083, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "成都", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "成都", "scheme": "STANDARD", "type": "公积金", "lower": 2330.0, "upper": 31378.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "深圳": {"SHENZHEN_HUKOU": [{"city": "深圳", "scheme": "SHENZHEN_HUKOU", "type": "养老", "lower": 4775.0, "upper": 27549.0, "company_rate": 0.17, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1(深户17%)", "enabled": true}, {"city": "深圳", "scheme": "SHENZHEN_HUKOU", "type": "失业", "lower": 2520.0, "upper": 48471.0, "company_rate": 0.008, "personal_rate": 0.002, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "深圳", "scheme": "SHENZHEN_HUKOU", "type": "工伤", "lower": 2520.0, "upper": null, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码|无上限", "enabled": true}, {"city": "深圳", "scheme": "SHENZHEN_HUKOU", "type": "医疗", "lower": 6727.0, "upper": 33633.0, "company_rate": 0.06, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "深圳", "scheme": "SHENZHEN_HUKOU", "type": "生育", "lower": 4775.0, "upper": 27549.0, "company_rate": 0.005, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "深圳", "scheme": "SHENZHEN_HUKOU", "type": "公积金", "lower": 2520.0, "upper": 48471.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}], "FEI_SHENZHEN_HUKOU": [{"city": "深圳", "scheme": "FEI_SHENZHEN_HUKOU", "type": "养老", "lower": 4775.0, "upper": 27549.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "澄清(非深户16%)", "enabled": true}, {"city": "深圳", "scheme": "FEI_SHENZHEN_HUKOU", "type": "失业", "lower": 2520.0, "upper": 48471.0, "company_rate": 0.008, "personal_rate": 0.002, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "深圳", "scheme": "FEI_SHENZHEN_HUKOU", "type": "工伤", "lower": 2520.0, "upper": null, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码|无上限", "enabled": true}, {"city": "深圳", "scheme": "FEI_SHENZHEN_HUKOU", "type": "医疗", "lower": 6727.0, "upper": 33633.0, "company_rate": 0.06, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "深圳", "scheme": "FEI_SHENZHEN_HUKOU", "type": "生育", "lower": 4775.0, "upper": 27549.0, "company_rate": 0.005, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "深圳", "scheme": "FEI_SHENZHEN_HUKOU", "type": "公积金", "lower": 2520.0, "upper": 48471.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "武汉": {"STANDARD": [{"city": "武汉", "scheme": "STANDARD", "type": "养老", "lower": 4498.0, "upper": 22488.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "武汉", "scheme": "STANDARD", "type": "失业", "lower": 4498.0, "upper": 22488.0, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "武汉", "scheme": "STANDARD", "type": "工伤", "lower": 4498.0, "upper": 22488.0, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "武汉", "scheme": "STANDARD", "type": "医疗", "lower": 4498.0, "upper": 22488.0, "company_rate": 0.087, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 5.0, "source": "同养老", "enabled": true}, {"city": "武汉", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "武汉", "scheme": "STANDARD", "type": "公积金", "lower": 2400.0, "upper": 36072.2, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "重庆": {"STANDARD": [{"city": "重庆", "scheme": "STANDARD", "type": "养老", "lower": 4404.0, "upper": 22017.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "重庆", "scheme": "STANDARD", "type": "失业", "lower": 4404.0, "upper": 22017.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "重庆", "scheme": "STANDARD", "type": "工伤", "lower": 4404.0, "upper": 22017.0, "company_rate": 0.003, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "重庆", "scheme": "STANDARD", "type": "医疗", "lower": 4404.0, "upper": 22017.0, "company_rate": 0.1, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 5.0, "source": "同养老", "enabled": true}, {"city": "重庆", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "重庆", "scheme": "STANDARD", "type": "公积金", "lower": 2330.0, "upper": 31393.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "天津": {"STANDARD": [{"city": "天津", "scheme": "STANDARD", "type": "养老", "lower": 5124.0, "upper": 25620.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "天津", "scheme": "STANDARD", "type": "失业", "lower": 5124.0, "upper": 25620.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "天津", "scheme": "STANDARD", "type": "工伤", "lower": 5124.0, "upper": 25620.0, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "天津", "scheme": "STANDARD", "type": "医疗", "lower": 5124.0, "upper": 25620.0, "company_rate": 0.1, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 22.0, "source": "同养老", "enabled": true}, {"city": "天津", "scheme": "STANDARD", "type": "生育", "lower": 5124.0, "upper": 25620.0, "company_rate": 0.005, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "天津", "scheme": "STANDARD", "type": "公积金", "lower": 2510.0, "upper": 28917.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "杭州": {"STANDARD": [{"city": "杭州", "scheme": "STANDARD", "type": "养老", "lower": 4986.0, "upper": 25299.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "杭州", "scheme": "STANDARD", "type": "失业", "lower": 4986.0, "upper": 25299.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "杭州", "scheme": "STANDARD", "type": "工伤", "lower": 4986.0, "upper": 25299.0, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "杭州", "scheme": "STANDARD", "type": "医疗", "lower": 4986.0, "upper": 25299.0, "company_rate": 0.095, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "杭州", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "杭州", "scheme": "STANDARD", "type": "公积金", "lower": 2660.0, "upper": 40694.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "郑州": {"STANDARD": [{"city": "郑州", "scheme": "STANDARD", "type": "养老", "lower": 3831.0, "upper": 19155.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "郑州", "scheme": "STANDARD", "type": "失业", "lower": 3831.0, "upper": 19155.0, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "郑州", "scheme": "STANDARD", "type": "工伤", "lower": 3831.0, "upper": 19155.0, "company_rate": 0.0016, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "澄清(0.16%)", "enabled": true}, {"city": "郑州", "scheme": "STANDARD", "type": "医疗", "lower": 3831.0, "upper": 19155.0, "company_rate": 0.07, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "郑州", "scheme": "STANDARD", "type": "生育", "lower": 3831.0, "upper": 19155.0, "company_rate": 0.01, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "郑州", "scheme": "STANDARD", "type": "公积金", "lower": 2350.0, "upper": 27520.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "济南": {"STANDARD": [{"city": "济南", "scheme": "STANDARD", "type": "养老", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "济南", "scheme": "STANDARD", "type": "失业", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "济南", "scheme": "STANDARD", "type": "工伤", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.0016, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "济南", "scheme": "STANDARD", "type": "医疗", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.08, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "济南", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "济南", "scheme": "STANDARD", "type": "公积金", "lower": 2400.0, "upper": 33902.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "西安": {"STANDARD": [{"city": "西安", "scheme": "STANDARD", "type": "养老", "lower": 4650.0, "upper": 23250.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "西安", "scheme": "STANDARD", "type": "失业", "lower": 4650.0, "upper": 23250.0, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "西安", "scheme": "STANDARD", "type": "工伤", "lower": 4650.0, "upper": 23250.0, "company_rate": 0.0032, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "西安", "scheme": "STANDARD", "type": "医疗", "lower": 4990.0, "upper": 24948.0, "company_rate": 0.07, "personal_rate": 0.02, "company_fixed": 6.4, "personal_fixed": 1.6, "source": "硬编码", "enabled": true}, {"city": "西安", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "西安", "scheme": "STANDARD", "type": "公积金", "lower": 2376.0, "upper": 32726.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "沈阳": {"STANDARD": [{"city": "沈阳", "scheme": "STANDARD", "type": "养老", "lower": 4359.0, "upper": 21792.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "沈阳", "scheme": "STANDARD", "type": "失业", "lower": 4359.0, "upper": 21792.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "沈阳", "scheme": "STANDARD", "type": "工伤", "lower": 4359.0, "upper": 21792.0, "company_rate": 0.004, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "沈阳", "scheme": "STANDARD", "type": "医疗", "lower": 4846.0, "upper": 24228.0, "company_rate": 0.086, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "沈阳", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "沈阳", "scheme": "STANDARD", "type": "公积金", "lower": 2230.0, "upper": 29523.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "广州": {"STANDARD": [{"city": "广州", "scheme": "STANDARD", "type": "养老", "lower": 5510.0, "upper": 27549.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "广州", "scheme": "STANDARD", "type": "失业", "lower": 2500.0, "upper": 42933.0, "company_rate": 0.008, "personal_rate": 0.002, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "广州", "scheme": "STANDARD", "type": "工伤", "lower": 2500.0, "upper": null, "company_rate": 0.002, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码|无上限", "enabled": true}, {"city": "广州", "scheme": "STANDARD", "type": "医疗", "lower": 6234.0, "upper": 31170.0, "company_rate": 0.0685, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "广州", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "广州", "scheme": "STANDARD", "type": "公积金", "lower": 2500.0, "upper": 41697.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "长沙": {"STANDARD": [{"city": "长沙", "scheme": "STANDARD", "type": "养老", "lower": 4072.0, "upper": 20361.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "长沙", "scheme": "STANDARD", "type": "失业", "lower": 4072.0, "upper": 20361.0, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "长沙", "scheme": "STANDARD", "type": "工伤", "lower": 4072.0, "upper": 20361.0, "company_rate": 0.006, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "长沙", "scheme": "STANDARD", "type": "医疗", "lower": 4072.0, "upper": 20361.0, "company_rate": 0.087, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 15.0, "source": "同养老", "enabled": true}, {"city": "长沙", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "长沙", "scheme": "STANDARD", "type": "公积金", "lower": 2200.0, "upper": 32744.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "合肥": {"STANDARD": [{"city": "合肥", "scheme": "STANDARD", "type": "养老", "lower": 4311.0, "upper": 21556.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "合肥", "scheme": "STANDARD", "type": "失业", "lower": 4311.0, "upper": 21556.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "合肥", "scheme": "STANDARD", "type": "工伤", "lower": 4311.0, "upper": 21556.0, "company_rate": 0.004, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "合肥", "scheme": "STANDARD", "type": "医疗", "lower": 4311.0, "upper": 21556.0, "company_rate": 0.064, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "合肥", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "合肥", "scheme": "STANDARD", "type": "公积金", "lower": 2320.0, "upper": 31564.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "上海": {"STANDARD": [{"city": "上海", "scheme": "STANDARD", "type": "养老", "lower": 7460.0, "upper": 37302.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "上海", "scheme": "STANDARD", "type": "失业", "lower": 7460.0, "upper": 37302.0, "company_rate": 0.005, "personal_rate": 0.005, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "上海", "scheme": "STANDARD", "type": "工伤", "lower": 7460.0, "upper": 37302.0, "company_rate": 0.0032, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "上海", "scheme": "STANDARD", "type": "医疗", "lower": 7460.0, "upper": 37302.0, "company_rate": 0.09, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "上海", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "上海", "scheme": "STANDARD", "type": "公积金", "lower": 2690.0, "upper": 37302.0, "company_rate": 0.07, "personal_rate": 0.07, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "青岛": {"STANDARD": [{"city": "青岛", "scheme": "STANDARD", "type": "养老", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "青岛", "scheme": "STANDARD", "type": "失业", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "青岛", "scheme": "STANDARD", "type": "工伤", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.0032, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "青岛", "scheme": "STANDARD", "type": "医疗", "lower": 4504.0, "upper": 22518.0, "company_rate": 0.08, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "青岛", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "青岛", "scheme": "STANDARD", "type": "公积金", "lower": 2400.0, "upper": 34342.8, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}, "贵阳": {"STANDARD": [{"city": "贵阳", "scheme": "STANDARD", "type": "养老", "lower": 5127.15, "upper": 21973.5, "company_rate": 0.16, "personal_rate": 0.08, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}, {"city": "贵阳", "scheme": "STANDARD", "type": "失业", "lower": 5127.15, "upper": 21973.5, "company_rate": 0.007, "personal_rate": 0.003, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "贵阳", "scheme": "STANDARD", "type": "工伤", "lower": 5127.15, "upper": 21973.5, "company_rate": 0.005, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "同养老", "enabled": true}, {"city": "贵阳", "scheme": "STANDARD", "type": "医疗", "lower": 5859.6, "upper": 21973.5, "company_rate": 0.085, "personal_rate": 0.02, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "硬编码", "enabled": true}, {"city": "贵阳", "scheme": "STANDARD", "type": "生育", "lower": null, "upper": null, "company_rate": 0.0, "personal_rate": 0.0, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "未启用", "enabled": false}, {"city": "贵阳", "scheme": "STANDARD", "type": "公积金", "lower": 2130.0, "upper": 25980.0, "company_rate": 0.12, "personal_rate": 0.12, "company_fixed": 0.0, "personal_fixed": 0.0, "source": "引用Sheet1", "enabled": true}]}}, "meta": {"round": {"养老": 2, "失业": 2, "工伤": 2, "医疗": 2, "生育": 2, "公积金": 0}, "schemeLabel": {"STANDARD": "标准", "SHENZHEN_HUKOU": "深圳户籍（深户）", "FEI_SHENZHEN_HUKOU": "非深圳户籍（非深户）"}, "current": {"v": "v1", "effective": "2026.07–2027.06"}, "versions": [{"v": "v1", "date": "2026-07-01", "effective": "2026.07–2027.06", "note": "初始版本：纳入深圳户籍双方案(深户17%/非深户16%)、郑州工伤0.16%、成都工伤0.24%、深圳/广州工伤不封顶、贵阳医疗下限5859.6 等 Q1–Q5 澄清结论；126 条参数由现状 Excel 反解生成。"}]}};
+const DATA = PAYLOAD.data;
+const META = PAYLOAD.meta;
+const ROUND = META.round;
+const SCHEME_LABEL = META.schemeLabel;
+
+function fmt(n, d){ return Number(n).toLocaleString('zh-CN', {minimumFractionDigits:d, maximumFractionDigits:d}); }
+function r2(v, d){ const f = Math.pow(10, d); const x = v * f; return Math.round(x + (x>=0?1e-9:-1e-9)) / f; }
+function pct(x){ return (x*100).toFixed(2) + '%'; }
+
+function initCities(){
+  const sel = document.getElementById('city');
+  Object.keys(DATA).forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.text = c; sel.appendChild(o);
+  });
+  sel.onchange = onCityChange;
+  onCityChange();
+}
+function onCityChange(){
+  const city = document.getElementById('city').value;
+  const schemes = Object.keys(DATA[city]);
+  const sf = document.getElementById('scheme-field');
+  const ss = document.getElementById('scheme');
+  ss.innerHTML = '';
+  if (schemes.length > 1){
+    sf.classList.remove('hidden');
+    schemes.forEach(s => { const o = document.createElement('option'); o.value = s; o.text = SCHEME_LABEL[s] || s; ss.appendChild(o); });
+  } else {
+    sf.classList.add('hidden');
+    ss.innerHTML = '<option value="'+schemes[0]+'">'+ (SCHEME_LABEL[schemes[0]]||schemes[0]) +'</option>';
+  }
+}
+function switchTab(t){
+  ['calc','rate','admin'].forEach(k => {
+    document.getElementById('tab-'+k).classList.toggle('active', t===k);
+    document.getElementById('view-'+k).classList.toggle('hidden', t!==k);
+  });
+  if (t==='rate') renderRate();
+}
+function calc(city, scheme, salary){
+  const list = DATA[city][scheme];
+  let compTotal=0, persTotal=0, compRate=0, persRate=0;
+  const detail=[];
+  list.forEach(ins => {
+    if (!ins.enabled){
+      detail.push({type:ins.type, skipped:true});
+      return;
+    }
+    let base = salary;
+    if (ins.lower != null && base < ins.lower) base = ins.lower;
+    if (ins.upper != null && base > ins.upper) base = ins.upper;
+    const ca = r2(base*ins.company_rate + ins.company_fixed, ROUND[ins.type]);
+    const pa = r2(base*ins.personal_rate + ins.personal_fixed, ROUND[ins.type]);
+    compTotal += ca; persTotal += pa;
+    compRate += ins.company_rate; persRate += ins.personal_rate;
+    let note = [];
+    if (ins.lower != null && salary < ins.lower) note.push('按下限'+fmt(ins.lower,2)+'保底');
+    if (ins.upper != null && salary > ins.upper) note.push('按上限'+fmt(ins.upper,2)+'封顶');
+    if (ins.company_fixed) note.push('单位含固定'+fmt(ins.company_fixed,2));
+    if (ins.personal_fixed) note.push('个人含固定'+fmt(ins.personal_fixed,2));
+    if (!ins.upper) note.push('工伤不封顶');
+    detail.push({type:ins.type, base, ca, pa, cr:ins.company_rate, pr:ins.personal_rate, note:note.join('；')});
+  });
+  return {compTotal, persTotal, compRate, persRate, detail};
+}
+function run(){
+  document.getElementById('err').textContent = '';
+  const city = document.getElementById('city').value;
+  const scheme = document.getElementById('scheme').value;
+  const salary = parseFloat(document.getElementById('salary').value);
+  if (!salary || salary <= 0){ document.getElementById('err').textContent = '请输入大于 0 的月度税前工资。'; return; }
+  const r = calc(city, scheme, salary);
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('r-comp-rate').textContent = pct(r.compRate);
+  document.getElementById('r-pers-rate').textContent = pct(r.persRate);
+  document.getElementById('r-comp-amt').textContent = '¥' + fmt(r.compTotal,2);
+  document.getElementById('r-pers-amt').textContent = '¥' + fmt(r.persTotal,2);
+  const schemeTxt = (Object.keys(DATA[city]).length>1) ? '（'+ (SCHEME_LABEL[scheme]||scheme) +'）' : '';
+  document.getElementById('r-summary').textContent =
+    city + schemeTxt + ' · 工资 ¥' + fmt(salary,2) + ' · 单位+个人合计 ¥' + fmt(r.compTotal+r.persTotal,2) +
+    ' · 公司综合成本 ≈ ¥' + fmt(salary + r.compTotal,2) + '（工资+单位社保公积金）';
+  const tb = document.querySelector('#detail tbody'); tb.innerHTML = '';
+  r.detail.forEach(d => {
+    if (d.skipped){ tb.innerHTML += '<tr class="disabled"><td>'+d.type+'</td><td colspan="6">未启用 / 已并入医保，不单独缴纳</td></tr>'; return; }
+    tb.innerHTML += '<tr><td>'+d.type+'</td><td>'+fmt(d.base,2)+'</td><td>'+(d.cr?pct(d.cr):'—')+
+      '</td><td>¥'+fmt(d.ca,2)+'</td><td>'+(d.pr?pct(d.pr):'—')+'</td><td>¥'+fmt(d.pa,2)+'</td><td style="text-align:left">'+ (d.note||'') +'</td></tr>';
+  });
+  document.getElementById('r-note').innerHTML =
+    '口径说明：① 缴费基数先按工资卡各险种上下限（低于取下限、高于取上限）；② 金额 = 基数×比例 + 固定值，逐险种四舍五入后求和，<b>不先求和再舍入</b>；③ 社保到分、公积金到元；④ 名义比例仅供快速比对，实际以合计金额为准。';
+  window.__last = {city, scheme, salary, r};
+}
+function renderRate(){
+  const tb = document.querySelector('#rate-table tbody'); tb.innerHTML = '';
+  Object.keys(DATA).forEach(city => {
+    Object.keys(DATA[city]).forEach(scheme => {
+      let cr=0, pr=0;
+      DATA[city][scheme].forEach(ins => { if(ins.enabled){ cr+=ins.company_rate; pr+=ins.personal_rate; } });
+      const schemeTxt = (Object.keys(DATA[city]).length>1) ? (SCHEME_LABEL[scheme]||scheme) : '标准';
+      tb.innerHTML += '<tr'+(city==='深圳'?' style="background:#f0f6ff"':'')+'><td>'+city+'</td><td>'+schemeTxt+'</td><td>'+pct(cr)+'</td><td>'+pct(pr)+'</td></tr>';
+    });
+  });
+}
+function exportCSV(){
+  if (!window.__last) return;
+  const {city, scheme, salary, r} = window.__last;
+  let csv = '城市,参保方案,险种,缴费基数,单位比例,单位金额,个人比例,个人金额\n';
+  r.detail.forEach(d => {
+    if (d.skipped){ csv += city+','+(SCHEME_LABEL[scheme]||scheme)+','+d.type+',,未启用,,,, \n'; return; }
+    csv += city+','+(SCHEME_LABEL[scheme]||scheme)+','+d.type+','+d.base+','+(d.cr||'')+','+d.ca+','+(d.pr||'')+','+d.pa+'\n';
+  });
+  csv += '合计,,,单位合计,'+r.compTotal+',个人合计,'+r.persTotal+'\n';
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = '社保公积金测算_'+city+'_'+salary+'.csv'; a.click();
+}
+function toast(msg){
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(() => el.classList.remove('show'), 2400);
+}
+function copyResult(){
+  if (!window.__last){ toast('请先点击「测算」'); return; }
+  const {city, scheme, salary, r} = window.__last;
+  const schemeTxt = (Object.keys(DATA[city]).length>1) ? (SCHEME_LABEL[scheme]||scheme) : '';
+  let t = '【社保公积金成本测算】\n';
+  t += '城市：' + city + (schemeTxt ? '（'+schemeTxt+'）' : '') + '\n';
+  t += '月度税前工资：¥' + fmt(salary,2) + '\n';
+  t += '单位名义比例：' + pct(r.compRate) + '　个人名义比例：' + pct(r.persRate) + '\n';
+  t += '单位合计：¥' + fmt(r.compTotal,2) + '　个人合计：¥' + fmt(r.persTotal,2) + '\n';
+  t += '单位+个人合计：¥' + fmt(r.compTotal+r.persTotal,2) + '\n';
+  t += '公司综合成本 ≈ ¥' + fmt(salary + r.compTotal,2) + '（工资+单位社保公积金）\n';
+  t += '———————————\n';
+  t += '逐险种明细：\n';
+  r.detail.forEach(d => {
+    if (d.skipped){ t += '· ' + d.type + '：未启用 / 已并入医保，不单独缴纳\n'; return; }
+    t += '· ' + d.type + '：基数 ' + fmt(d.base,2) +
+         '｜单位 ' + (d.cr?pct(d.cr):'—') + ' = ¥' + fmt(d.ca,2) +
+         '｜个人 ' + (d.pr?pct(d.pr):'—') + ' = ¥' + fmt(d.pa,2) +
+         (d.note ? '（'+d.note+'）' : '') + '\n';
+  });
+  t += '———————————\n';
+  t += '口径：缴费基数先卡各险种上下限；金额=基数×比例+固定值，逐险种四舍五入后求和；社保到分、公积金到元。仅供粗略估算，不含个税。';
+  copyText(t);
+}
+function copyText(t){
+  const ok = () => toast('已复制，可粘贴到微信 / 飞书 / 文档');
+  const fallback = () => {
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = t; ta.style.position='fixed'; ta.style.top='-9999px'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) ok(); else toast('复制失败，请长按手动选择复制');
+    }catch(e){ toast('复制失败，请手动选择文本复制'); }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(ok).catch(fallback);
+  } else { fallback(); }
+}
+function renderVersions(){
+  if (META.current){
+    document.getElementById('ver-badge').textContent = '数据版本 ' + META.current.v + ' · 生效 ' + META.current.effective;
+    document.getElementById('ver-foot').textContent = ' · 当前数据版本 ' + META.current.v + '（生效 ' + META.current.effective + '）';
+  }
+  const box = document.getElementById('ver-list');
+  if (!box || !META.versions) return;
+  box.innerHTML = META.versions.map(v =>
+    '<div style="padding:8px 0;border-bottom:1px solid #eef1f6"><b>'+v.v+'</b> · 发布 '+v.date+' · 生效 '+v.effective+
+    (v.note ? '<div style="color:#5a6172;margin-top:3px;line-height:1.5">'+v.note+'</div>' : '')+'</div>'
+  ).join('');
+}
+const ADMIN_PWD = 'shebaozhuanyuan';
+function unlockAdmin(){
+  const v = document.getElementById('admin-pwd').value;
+  const err = document.getElementById('admin-pwderr');
+  if (v === ADMIN_PWD){
+    document.getElementById('admin-lock').classList.add('hidden');
+    document.getElementById('admin-panel').classList.remove('hidden');
+    err.textContent = '';
+  } else {
+    err.textContent = '密码错误，无法进入数据管理。';
+  }
+}
+let _csvText = '';
+const _drop = document.getElementById('drop');
+const _file = document.getElementById('file');
+if (_drop){
+  _drop.onclick = () => _file.click();
+  _drop.ondragover = e => { e.preventDefault(); _drop.style.borderColor = '#1f6feb'; };
+  _drop.ondragleave = () => { _drop.style.borderColor = '#ccd4e0'; };
+  _drop.ondrop = e => { e.preventDefault(); _drop.style.borderColor = '#ccd4e0'; if (e.dataTransfer.files[0]) _read(e.dataTransfer.files[0]); };
+  _file.onchange = e => { if (e.target.files[0]) _read(e.target.files[0]); };
+}
+function _read(f){
+  const r = new FileReader();
+  r.onload = () => { _csvText = r.result; _onCsv(); };
+  r.readAsText(f, 'utf-8');
+}
+function _parseCsv(text){
+  return text.split(/\r?\n/).filter(l => {
+    const t = l.trim();
+    return t !== '' && t[0] !== '#';
+  }).slice(1).map(l => l.split(','));
+}
+function _onCsv(){
+  document.getElementById('admin-err').textContent = '';
+  try{
+    const rows = _parseCsv(_csvText);
+    const data = {}; const warns = []; let count = 0;
+    for (const c of rows){
+      if (c.length < 9){ warns.push('列数不足9：' + c.join(',')); continue; }
+      const [city, scheme, type, lo, hi, cr, pr, cf, pf] = c;
+      const rec = {
+        city: city.trim(), scheme: scheme.trim(), type: type.trim(),
+        lower: lo.trim() ? parseFloat(lo) : null,
+        upper: hi.trim() ? parseFloat(hi) : null,
+        company_rate: cr.trim() ? parseFloat(cr) : 0,
+        personal_rate: pr.trim() ? parseFloat(pr) : 0,
+        company_fixed: cf.trim() ? parseFloat(cf) : 0,
+        personal_fixed: pf.trim() ? parseFloat(pf) : 0,
+        enabled: true
+      };
+      const nums = [rec.lower, rec.upper, rec.company_rate, rec.personal_rate, rec.company_fixed, rec.personal_fixed];
+      if (nums.some(v => v !== null && isNaN(v))) warns.push('数值非法：' + c.join(','));
+      data[rec.city] = data[rec.city] || {};
+      data[rec.city][rec.scheme] = data[rec.city][rec.scheme] || [];
+      data[rec.city][rec.scheme].push(rec);
+      count++;
+    }
+    const cities = Object.keys(data);
+    document.getElementById('admin-form').classList.remove('hidden');
+    const pv = document.getElementById('preview');
+    pv.classList.remove('hidden');
+    pv.innerHTML = '解析成功：' + cities.length + ' 个城市 / ' + count + ' 条参数' +
+      (warns.length ? '<br>⚠️ ' + warns.join('<br>') : '');
+    window.__parsed = data;
+    const cur = (PAYLOAD.meta.current && PAYLOAD.meta.current.v) || 'v1';
+    const mm = cur.match(/v(\d+)/);
+    document.getElementById('nv').value = 'v' + (mm ? (parseInt(mm[1], 10) + 1) : 2);
+  }catch(err){ document.getElementById('admin-err').textContent = '解析失败：' + err.message; }
+}
+function adminGenerate(){
+  if (!window.__parsed){ document.getElementById('admin-err').textContent = '请先上传 CSV'; return; }
+  const newMeta = JSON.parse(JSON.stringify(PAYLOAD.meta));
+  const nv = document.getElementById('nv').value || 'v2';
+  const neff = document.getElementById('neff').value || '';
+  const nnote = document.getElementById('nnote').value || '';
+  newMeta.current = { v: nv, effective: neff };
+  newMeta.versions = (newMeta.versions || []).concat([{ v: nv, date: new Date().toISOString().slice(0,10), effective: neff, note: nnote }]);
+  let newJson = JSON.stringify({ data: window.__parsed, meta: newMeta });
+  newJson = newJson.replace(/<\/script>/gi, '<\\/script>');
+  document.getElementById('admin-err').textContent = '正在生成…';
+  fetch(location.href).then(r => r.text()).then(html => {
+    const re = /const PAYLOAD = ([\s\S]*?);\s*const DATA/;
+    if (!re.test(html)){ document.getElementById('admin-err').textContent = '生成失败：未能在页面源码中定位 PAYLOAD（请通过部署链接打开本页）。'; return; }
+    const newHtml = html.replace(re, () => 'const PAYLOAD = ' + newJson + ';\nconst DATA');
+    const blob = new Blob([newHtml], { type:'text/html;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
+    document.getElementById('admin-err').textContent = '';
+    saveUploadHistory(nv, neff, nnote, _csvText, window.__parsed);
+    toast('已生成 index.html，发给部署同学重新部署即全员生效');
+  }).catch(e => { document.getElementById('admin-err').textContent = '生成失败（需通过部署链接打开本页）：' + e.message; });
+}
+function downloadTemplate(){
+  const header = '城市,方案,险种,下限,上限,单位比例,个人比例,单位固定,个人固定';
+  const rows = [
+    '北京,STANDARD,养老,7162,35811,0.16,0.08,0,0',
+    '北京,STANDARD,失业,7162,35811,0.005,0.005,0,0',
+    '北京,STANDARD,工伤,7162,35811,0.002,0,0,0',
+    '北京,STANDARD,医疗,7162,35811,0.10,0.02,0,3',
+    '北京,STANDARD,公积金,2420,33891,0.12,0.12,0,0',
+    '深圳,STANDARD,养老,4492,26421,0.17,0.08,0,0',
+    '深圳,NONLOCAL,养老,4492,26421,0.16,0.08,0,0',
+    '上海,STANDARD,养老,7384,36921,0.16,0.08,0,0',
+    '上海,STANDARD,公积金,2590,36921,0.07,0.07,0,0'
+  ];
+  const notes = [
+    '# 填写说明（以实际政策为准，本行以 # 开头会被忽略）：',
+    '# 1. 城市：城市名称，如 北京、上海、深圳。',
+    '# 2. 方案：STANDARD=标准（深户等本地户籍），NONLOCAL=非本地户籍；单方案城市全部填 STANDARD。',
+    '# 3. 险种：养老、失业、工伤、医疗、生育、公积金，顺序不强制但建议按此排列。',
+    '# 4. 下限/上限：缴费基数上下限；无上限填 0 或留空（如深圳/广州工伤不封顶）。',
+    '# 5. 单位比例/个人比例：小数形式，如 0.16 表示 16%。',
+    '# 6. 单位固定/个人固定：固定金额（如北京医疗大病 +3），无固定值填 0。',
+    '# 7. 不需要的险种直接不写该行即可（已删除原「来源」列，不再有启用/停用的概念）。',
+    '# 8. 第一行为表头，不会被解析；建议保留。'
+  ];
+  const csv = [header].concat(rows).concat(notes).join('\n') + '\n';
+  const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8;' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = '社保公积金规则模板.csv'; a.click();
+}
+const HISTORY_KEY = 'ss_upload_history';
+function saveUploadHistory(v, effective, note, csvText, data){
+  try{
+    let list = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    let count = 0, cities = 0;
+    Object.keys(data).forEach(c => { cities++; Object.keys(data[c]).forEach(s => count += data[c][s].length); });
+    list.unshift({ time: new Date().toISOString(), v, effective, note, rows: count, cities, csv: csvText });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 50)));
+    renderUploadHistory();
+  }catch(e){ console.error('保存上传记录失败', e); }
+}
+function renderUploadHistory(){
+  const box = document.getElementById('history-list');
+  if (!box) return;
+  let list = [];
+  try{ list = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }catch(e){}
+  if (!list.length){ box.innerHTML = '暂无上传记录（每次成功生成 index.html 后自动记录）'; return; }
+  box.innerHTML = list.map((h, i) => {
+    const t = new Date(h.time);
+    const timeStr = t.toLocaleString('zh-CN', { hour12: false });
+    return '<div class="history-item">' +
+      '<div class="hi-head"><span><b>' + (h.v || '—') + '</b> · ' + (h.effective || '未填生效区间') + '</span><span>' + timeStr + '</span></div>' +
+      '<div class="hi-meta">' + (h.cities || 0) + ' 个城市 / ' + (h.rows || 0) + ' 条参数' + (h.note ? ' · ' + h.note : '') + '</div>' +
+      '<div class="hi-actions"><button class="ghost" onclick="downloadOriginalCsv(' + i + ')">下载原始 CSV</button></div>' +
+      '</div>';
+  }).join('');
+}
+function downloadOriginalCsv(idx){
+  let list = [];
+  try{ list = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }catch(e){}
+  const h = list[idx];
+  if (!h || !h.csv){ toast('记录不存在'); return; }
+  const blob = new Blob(['\ufeff' + h.csv], { type:'text/csv;charset=utf-8;' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = '社保规则_' + (h.v || 'record') + '_' + h.time.slice(0,10) + '.csv'; a.click();
+}
+initCities();
+renderVersions();
+renderUploadHistory();
+</script>
+</body>
+</html>
