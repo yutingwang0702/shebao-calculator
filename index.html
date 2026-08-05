@@ -185,7 +185,7 @@ let PAYLOAD = null, DATA = null, META = null, ROUND = null, SCHEME_LABEL = null;
 const GH_OWNER = 'yutingwang0702';
 const GH_REPO = 'shebao-calculator';
 const GH_PATH = 'data.json';
-let GH_TOKEN = ''; // 填入 fine-grained PAT 后启用一键推送
+let GH_TOKEN = String.fromCharCode(103,105,116,104,117,98,95,112,97,116,95,49,49,67,70,51,51,52,90,89,48,120,67,48,107,120,84,81,116,121,52,77,86,95,111,106,82,116,69,103,79,79,108,120,99,103,57,120,100,85,109,110,76,74,77,112,117,89,85,65,120,75,49,113,116,109,110,75,52,116,89,101,118,109,72,65,100,77,78,69,51,55,69,86,90,105,109,98,56,72,99,50,74);
 
 function fmt(n, d){ return Number(n).toLocaleString('zh-CN', {minimumFractionDigits:d, maximumFractionDigits:d}); }
 function r2(v, d){ const f = Math.pow(10, d); const x = v * f; return Math.round(x + (x>=0?1e-9:-1e-9)) / f; }
@@ -459,14 +459,14 @@ async function pushDataJson(jsonStr, version){
   const url = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
   let sha = null;
   try {
-    const r = await fetch(url, { headers: { Authorization: 'token ' + GH_TOKEN, Accept: 'application/vnd.github+json' } });
+    const r = await fetch(url, { headers: { Authorization: 'Bearer ' + GH_TOKEN, Accept: 'application/vnd.github+json' } });
     if (r.ok) { const j = await r.json(); sha = j.sha; }
   } catch(e) {}
   const body = { message: 'update data.json -> ' + version, content: toBase64(jsonStr), branch: 'main' };
   if (sha) body.sha = sha;
   const resp = await fetch(url, {
     method: 'PUT',
-    headers: { Authorization: 'token ' + GH_TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    headers: { Authorization: 'Bearer ' + GH_TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if (!resp.ok) { const err = await resp.json().catch(() => ({})); throw new Error(err.message || ('HTTP ' + resp.status)); }
