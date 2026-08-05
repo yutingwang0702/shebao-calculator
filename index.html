@@ -61,6 +61,24 @@
   .history-item .hi-meta { color:#5a6172; font-size:12px; margin-top:4px; }
   .history-item .hi-actions { margin-top:8px; }
   .history-item button { padding:4px 10px; font-size:12px; }
+  .editor-toolbar { flex-wrap:wrap; gap:8px; }
+  .estatus { color:#1a9d5a; font-size:13px; align-self:center; }
+  .editor-layout { display:flex; gap:16px; margin-top:14px; align-items:flex-start; }
+  .city-list { width:160px; flex:0 0 160px; max-height:560px; overflow:auto; border:1px solid #e6ebf3; border-radius:10px; background:#fafbfe; }
+  .city-list .ci { padding:10px 12px; cursor:pointer; border-bottom:1px solid #eef1f6; font-size:14px; }
+  .city-list .ci:hover { background:#eef4ff; }
+  .city-list .ci.active { background:#1f6feb; color:#fff; font-weight:600; }
+  .city-list .ci.add { color:#1f6feb; text-align:center; font-weight:600; }
+  .editor-main { flex:1 1 auto; min-width:0; }
+  .scheme-card { border:1px solid #e6ebf3; border-radius:10px; margin-bottom:14px; overflow:hidden; }
+  .scheme-card .sc-head { background:#f3f6fb; padding:8px 12px; font-weight:600; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+  .scheme-card table { width:100%; border-collapse:collapse; font-size:13px; }
+  .scheme-card th, .scheme-card td { padding:7px 8px; border-bottom:1px solid #eef1f6; text-align:left; }
+  .scheme-card th { background:#fafbfe; color:#5a6172; font-weight:600; }
+  .scheme-card td input { width:100%; min-width:70px; box-sizing:border-box; padding:5px 6px; border:1px solid #d6dde8; border-radius:5px; font-size:13px; }
+  .scheme-card td input:focus { border-color:#1f6feb; outline:none; }
+  .scheme-card .row-del { color:#c0392b; cursor:pointer; border:none; background:none; font-size:16px; line-height:1; }
+  .add-row-btn { margin:6px 12px 12px; font-size:12px; }
 </style>
 </head>
 <body>
@@ -142,30 +160,31 @@
       </div>
 
       <div id="admin-panel" class="hidden">
-        <div class="actions" style="margin-bottom:10px;">
+        <div class="actions editor-toolbar">
           <button class="ghost" onclick="downloadTemplate()">下载 CSV 模板</button>
+          <button class="ghost" onclick="toggleCsvImport()">批量导入 CSV</button>
+          <button class="ghost" onclick="resetEditor()">重置未保存改动</button>
+          <button class="primary" onclick="saveEditor()">保存并生效</button>
+          <span id="editor-status" class="estatus"></span>
         </div>
-        <div id="drop">把规则 CSV 拖到这里，或点击选择文件</div>
-        <input id="file" type="file" accept=".csv" class="hidden">
-        <div id="preview" class="sub hidden"></div>
-        <div id="admin-form" class="hidden">
-          <div class="form-row" style="margin-top:12px;">
-            <div class="field"><label>新版本号</label><input id="nv" class="nv" placeholder="v2"></div>
-            <div class="field"><label>生效区间</label><input id="neff" placeholder="2026.07–2027.06"></div>
-          </div>
-          <div class="field" style="margin-top:10px;width:100%;">
-            <label>变更说明</label>
-            <input id="nnote" style="min-width:100%;" placeholder="如：更新北京/上海比例，新增 xx 城">
-          </div>
-          <div class="actions">
-            <button class="primary" onclick="adminGenerate()">生成并推送</button>
-          </div>
+
+        <div id="csv-import-area" class="card hidden" style="margin-bottom:14px;">
+          <p class="sub">批量导入：把规则 CSV 拖入下方虚线框（列：城市,方案,险种,下限,上限,单位比例,个人比例,单位固定,个人固定）。导入会与当前数据<b>合并</b>——只更新 CSV 里出现的城市/险种，其它保持原样。</p>
+          <div id="drop">把规则 CSV 拖到这里，或点击选择文件</div>
+          <input id="file" type="file" accept=".csv" class="hidden">
+          <div id="preview" class="sub hidden"></div>
         </div>
+
+        <div class="editor-layout">
+          <div id="city-list" class="city-list"></div>
+          <div id="editor-main" class="editor-main"></div>
+        </div>
+
         <div id="admin-err" class="err"></div>
 
         <div id="upload-history" style="margin-top:24px;">
-          <h3>上传记录</h3>
-          <div id="history-list" class="sub">暂无上传记录</div>
+          <h3>操作记录</h3>
+          <div id="history-list" class="sub">暂无操作记录</div>
         </div>
 
         <details class="card" id="ver-box" style="margin-top:20px;">
@@ -174,7 +193,7 @@
         </details>
       </div>
     </div>
-    <div class="note">操作说明：① 先点「下载 CSV 模板」查看必填列与示例；② 解锁后把规则 CSV 拖入虚线框（列：城市,方案,险种,下限,上限,单位比例,个人比例,单位固定,个人固定，共 9 列）；③ 系统自动校验并预填下一版本号；④ 点「生成并下载」得到新的 index.html，发给部署同学重新部署即全员生效；⑤ 每次成功生成都会在本页留下「上传记录」，可查看时间、版本、变更说明并下载原始 CSV。本页计算与上传均在浏览器本地完成，参数不上服务器。</div>
+    <div class="note">操作说明：① 解锁后左侧选择城市，右侧直接修改各险种的基数上下限、单位/个人比例、固定值；② 点「保存并生效」即推送到线上，约 1 分钟后全员刷新即生效（你不用再手动部署）；③ 没改的城市原样保留，不会动；④ 也可点「批量导入 CSV」做整体替换/合并；⑤ 每次保存都会在「操作记录」里留痕，可下载当时数据快照。</div>
   </div>
 </div>
 <footer>本工具仅供候选人社保公积金粗略估算，不构成薪资最终核算依据；个税未计入。<span id="ver-foot"></span></footer>
@@ -225,10 +244,7 @@ function calc(city, scheme, salary){
   let compTotal=0, persTotal=0, compRate=0, persRate=0;
   const detail=[];
   list.forEach(ins => {
-    if (!ins.enabled){
-      detail.push({type:ins.type, skipped:true});
-      return;
-    }
+    // 已删除启用/停用概念：未写入数据的险种即不参与计算，故此处全部纳入
     let base = salary;
     if (ins.lower != null && base < ins.lower) base = ins.lower;
     if (ins.upper != null && base > ins.upper) base = ins.upper;
@@ -277,7 +293,7 @@ function renderRate(){
   Object.keys(DATA).forEach(city => {
     Object.keys(DATA[city]).forEach(scheme => {
       let cr=0, pr=0;
-      DATA[city][scheme].forEach(ins => { if(ins.enabled){ cr+=ins.company_rate; pr+=ins.personal_rate; } });
+      DATA[city][scheme].forEach(ins => { cr+=ins.company_rate; pr+=ins.personal_rate; });
       const schemeTxt = (Object.keys(DATA[city]).length>1) ? (SCHEME_LABEL[scheme]||scheme) : '标准';
       tb.innerHTML += '<tr'+(city==='深圳'?' style="background:#f0f6ff"':'')+'><td>'+city+'</td><td>'+schemeTxt+'</td><td>'+pct(cr)+'</td><td>'+pct(pr)+'</td></tr>';
     });
@@ -364,6 +380,10 @@ function unlockAdmin(){
     document.getElementById('admin-lock').classList.add('hidden');
     document.getElementById('admin-panel').classList.remove('hidden');
     err.textContent = '';
+    EDITOR_DATA = JSON.parse(JSON.stringify(DATA)); // 以线上最新数据为编辑起点
+    EDITOR_CITY = null;
+    renderEditor();
+    document.getElementById('editor-status').textContent = '';
   } else {
     err.textContent = '密码错误，无法进入数据管理。';
   }
@@ -389,67 +409,166 @@ function _parseCsv(text){
     return t !== '' && t[0] !== '#';
   }).slice(1).map(l => l.split(','));
 }
-function _onCsv(){
-  document.getElementById('admin-err').textContent = '';
-  try{
-    const rows = _parseCsv(_csvText);
-    const data = {}; const warns = []; let count = 0;
-    for (const c of rows){
-      if (c.length < 9){ warns.push('列数不足9：' + c.join(',')); continue; }
-      const [city, scheme, type, lo, hi, cr, pr, cf, pf] = c;
-      const rec = {
-        city: city.trim(), scheme: scheme.trim(), type: type.trim(),
-        lower: lo.trim() ? parseFloat(lo) : null,
-        upper: hi.trim() ? parseFloat(hi) : null,
-        company_rate: cr.trim() ? parseFloat(cr) : 0,
-        personal_rate: pr.trim() ? parseFloat(pr) : 0,
-        company_fixed: cf.trim() ? parseFloat(cf) : 0,
-        personal_fixed: pf.trim() ? parseFloat(pf) : 0,
-        enabled: true
-      };
-      const nums = [rec.lower, rec.upper, rec.company_rate, rec.personal_rate, rec.company_fixed, rec.personal_fixed];
-      if (nums.some(v => v !== null && isNaN(v))) warns.push('数值非法：' + c.join(','));
-      data[rec.city] = data[rec.city] || {};
-      data[rec.city][rec.scheme] = data[rec.city][rec.scheme] || [];
-      data[rec.city][rec.scheme].push(rec);
-      count++;
-    }
-    const cities = Object.keys(data);
-    document.getElementById('admin-form').classList.remove('hidden');
-    const pv = document.getElementById('preview');
-    pv.classList.remove('hidden');
-    pv.innerHTML = '解析成功：' + cities.length + ' 个城市 / ' + count + ' 条参数' +
-      (warns.length ? '<br>⚠️ ' + warns.join('<br>') : '');
-    window.__parsed = data;
-    const cur = (PAYLOAD.meta.current && PAYLOAD.meta.current.v) || 'v1';
-    const mm = cur.match(/v(\d+)/);
-    document.getElementById('nv').value = 'v' + (mm ? (parseInt(mm[1], 10) + 1) : 2);
-  }catch(err){ document.getElementById('admin-err').textContent = '解析失败：' + err.message; }
+// 合并式解析：把 CSV 行解析成 {city,scheme,type,...} 记录数组（不分组，便于按记录合并）
+function _parseCsvRecords(text){
+  const rows = _parseCsv(text); const warns = []; const recs = [];
+  for (const c of rows){
+    if (c.length < 9){ warns.push('列数不足9：' + c.join(',')); continue; }
+    const [city, scheme, type, lo, hi, cr, pr, cf, pf] = c;
+    const rec = {
+      city: city.trim(), scheme: scheme.trim(), type: type.trim(),
+      lower: lo.trim() ? parseFloat(lo) : null,
+      upper: hi.trim() ? parseFloat(hi) : null,
+      company_rate: cr.trim() ? parseFloat(cr) : 0,
+      personal_rate: pr.trim() ? parseFloat(pr) : 0,
+      company_fixed: cf.trim() ? parseFloat(cf) : 0,
+      personal_fixed: pf.trim() ? parseFloat(pf) : 0
+    };
+    const nums = [rec.lower, rec.upper, rec.company_rate, rec.personal_rate, rec.company_fixed, rec.personal_fixed];
+    if (nums.some(v => v !== null && isNaN(v))) warns.push('数值非法：' + c.join(','));
+    recs.push(rec);
+  }
+  return { recs, warns };
 }
-function adminGenerate(){
-  if (!window.__parsed){ document.getElementById('admin-err').textContent = '请先上传 CSV'; return; }
+// 把记录数组合并进目标数据（按 city/scheme/type 记录级合并，其余城市不动）
+function mergeRecordsInto(target, recs){
+  for (const r of recs){
+    target[r.city] = target[r.city] || {};
+    target[r.scheme] = target[r.scheme] || [];
+    const arr = target[r.city][r.scheme];
+    const i = arr.findIndex(x => x.type === r.type);
+    if (i >= 0) arr[i] = r; else arr.push(r);
+  }
+}
+function _onCsv(){
+  const pv = document.getElementById('preview');
+  pv.classList.remove('hidden');
+  try{
+    const { recs, warns } = _parseCsvRecords(_csvText);
+    if (!recs.length){ pv.innerHTML = '未解析到有效数据'; return; }
+    mergeRecordsInto(EDITOR_DATA, recs);
+    const cities = new Set(recs.map(r => r.city));
+    pv.innerHTML = '已合并 ' + cities.size + ' 个城市 / ' + recs.length + ' 条参数到编辑区' +
+      (warns.length ? '<br>⚠️ ' + warns.join('<br>') : '') + '<br>点「保存并生效」才会真正推送上线。';
+    renderEditor();
+    if (document.getElementById('editor-city') && document.getElementById('editor-city').value)
+      renderCityEditor(document.getElementById('editor-city').value);
+  }catch(err){ pv.innerHTML = '解析失败：' + err.message; }
+}
+let EDITOR_DATA = null;       // 编辑器工作副本（深拷贝自 DATA）
+let EDITOR_CITY = null;       // 当前选中的城市
+function renderEditor(){
+  const list = document.getElementById('city-list');
+  const cities = Object.keys(EDITOR_DATA);
+  if (!EDITOR_CITY || !EDITOR_DATA[EDITOR_CITY]) EDITOR_CITY = cities[0];
+  list.innerHTML = cities.map(c =>
+    '<div class="ci' + (c === EDITOR_CITY ? ' active' : '') + '" onclick="selectCity(\'' + c + '\')">' + c + '</div>'
+  ).join('') + '<div class="ci add" onclick="addCity()">+ 新增城市</div>';
+  renderCityEditor(EDITOR_CITY);
+}
+function selectCity(c){
+  EDITOR_CITY = c;
+  document.querySelectorAll('#city-list .ci').forEach(el => {
+    if (el.textContent === c) el.classList.add('active'); else el.classList.remove('active');
+  });
+  renderCityEditor(c);
+}
+function renderCityEditor(city){
+  const main = document.getElementById('editor-main');
+  if (!city || !EDITOR_DATA[city]){ main.innerHTML = '<p class="sub">请选择左侧城市</p>'; return; }
+  let html = '';
+  Object.keys(EDITOR_DATA[city]).forEach(scheme => {
+    const label = (SCHEME_LABEL && SCHEME_LABEL[scheme]) || scheme;
+    const rows = EDITOR_DATA[city][scheme];
+    html += '<div class="scheme-card"><div class="sc-head"><span>' + city + ' · ' + label + '</span>' +
+      '<button class="ghost" onclick="addInsRow(\'' + city + '\',\'' + scheme + '\')">+ 险种</button></div>';
+    html += '<table><thead><tr><th>险种</th><th>基数下限</th><th>基数上限</th><th>单位比例</th><th>个人比例</th><th>单位固定</th><th>个人固定</th><th></th></tr></thead><tbody>';
+    rows.forEach((ins, idx) => {
+      html += '<tr>' +
+        '<td><input value="' + esc(ins.type) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'type\',this.value)"></td>' +
+        '<td><input type="number" step="any" value="' + num(ins.lower) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'lower\',this.value)"></td>' +
+        '<td><input type="number" step="any" value="' + num(ins.upper) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'upper\',this.value)"></td>' +
+        '<td><input type="number" step="any" value="' + num(ins.company_rate) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'company_rate\',this.value)"></td>' +
+        '<td><input type="number" step="any" value="' + num(ins.personal_rate) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'personal_rate\',this.value)"></td>' +
+        '<td><input type="number" step="any" value="' + num(ins.company_fixed) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'company_fixed\',this.value)"></td>' +
+        '<td><input type="number" step="any" value="' + num(ins.personal_fixed) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'personal_fixed\',this.value)"></td>' +
+        '<td><button class="row-del" title="删除此险种" onclick="delInsRow(\'' + city + '\',\'' + scheme + '\',' + idx + ')">×</button></td>' +
+        '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  main.innerHTML = html;
+}
+function editField(city, scheme, idx, field, val){
+  const ins = EDITOR_DATA[city][scheme][idx];
+  if (field === 'type') ins[field] = val.trim();
+  else ins[field] = val.trim() === '' ? (field === 'lower' || field === 'upper' ? null : 0) : parseFloat(val);
+}
+function addInsRow(city, scheme){
+  EDITOR_DATA[city][scheme].push({ city, scheme, type: '新险种', lower: null, upper: null, company_rate: 0, personal_rate: 0, company_fixed: 0, personal_fixed: 0 });
+  renderCityEditor(city);
+}
+function delInsRow(city, scheme, idx){
+  EDITOR_DATA[city][scheme].splice(idx, 1);
+  renderCityEditor(city);
+}
+function addCity(){
+  const name = prompt('请输入城市名称（如：昆明）：');
+  if (!name) return;
+  const c = name.trim();
+  if (EDITOR_DATA[c]){ selectCity(c); return; }
+  EDITOR_DATA[c] = { STANDARD: [{ city: c, scheme: 'STANDARD', type: '养老', lower: null, upper: null, company_rate: 0, personal_rate: 0, company_fixed: 0, personal_fixed: 0 }] };
+  renderEditor();
+  selectCity(c);
+}
+function resetEditor(){
+  EDITOR_DATA = JSON.parse(JSON.stringify(DATA));
+  renderEditor();
+  document.getElementById('editor-status').textContent = '已重置为线上最新数据';
+}
+function dataToCsv(data){
+  let csv = '城市,方案,险种,基数下限,基数上限,单位比例,个人比例,单位固定值,个人固定值\n';
+  Object.keys(data).forEach(city => Object.keys(data[city]).forEach(scheme => {
+    data[city][scheme].forEach(ins => {
+      csv += [city, scheme, ins.type, num(ins.lower), num(ins.upper), num(ins.company_rate), num(ins.personal_rate), num(ins.company_fixed), num(ins.personal_fixed)].join(',') + '\n';
+    });
+  }));
+  return csv;
+}
+function saveEditor(){
+  document.getElementById('admin-err').textContent = '';
+  const note = prompt('变更说明（选填，会记录在操作日志里）：', '');
   const newMeta = JSON.parse(JSON.stringify(PAYLOAD.meta));
-  const nv = document.getElementById('nv').value || 'v2';
-  const neff = document.getElementById('neff').value || '';
-  const nnote = document.getElementById('nnote').value || '';
-  newMeta.current = { v: nv, effective: neff };
-  newMeta.versions = (newMeta.versions || []).concat([{ v: nv, date: new Date().toISOString().slice(0,10), effective: neff, note: nnote }]);
-  const newJson = JSON.stringify({ data: window.__parsed, meta: newMeta }, null, 2);
+  const cur = (PAYLOAD.meta.current && PAYLOAD.meta.current.v) || 'v1';
+  const mm = cur.match(/v(\d+)/);
+  const nv = 'v' + (mm ? (parseInt(mm[1], 10) + 1) : 2);
+  newMeta.current = { v: nv, effective: newMeta.current ? newMeta.current.effective : '' };
+  newMeta.versions = (newMeta.versions || []).concat([{ v: nv, date: new Date().toISOString().slice(0,10), effective: newMeta.current.effective, note: note || '' }]);
+  const newJson = JSON.stringify({ data: EDITOR_DATA, meta: newMeta }, null, 2);
+  const snapCsv = dataToCsv(EDITOR_DATA);
   if (!GH_TOKEN){
-    document.getElementById('admin-err').textContent = '';
     const blob = new Blob([newJson], { type:'application/json;charset=utf-8' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'data.json'; a.click();
-    saveUploadHistory(nv, neff, nnote, _csvText, window.__parsed);
+    saveUploadHistory(nv, newMeta.current.effective, note || '', snapCsv, EDITOR_DATA);
     toast('已下载 data.json（未配置推送Token，请发给管理员手动推送）');
     return;
   }
-  document.getElementById('admin-err').textContent = '正在推送到 GitHub…';
+  document.getElementById('editor-status').textContent = '正在推送…';
   pushDataJson(newJson, nv).then(() => {
-    document.getElementById('admin-err').textContent = '';
-    saveUploadHistory(nv, neff, nnote, _csvText, window.__parsed);
-    toast('推送成功！约 1 分钟后刷新页面即可看到新数据');
-  }).catch(e => { document.getElementById('admin-err').textContent = '推送失败：' + e.message; });
+    DATA = JSON.parse(JSON.stringify(EDITOR_DATA)); // 同步运行时数据
+    saveUploadHistory(nv, newMeta.current.effective, note || '', snapCsv, EDITOR_DATA);
+    document.getElementById('editor-status').textContent = '✅ 已生效（' + nv + '）约 1 分钟后全员刷新可见';
+    toast('保存成功！约 1 分钟后刷新页面即生效');
+  }).catch(e => {
+    document.getElementById('editor-status').textContent = '';
+    document.getElementById('admin-err').textContent = '推送失败：' + e.message;
+  });
 }
+function toggleCsvImport(){
+  document.getElementById('csv-import-area').classList.toggle('hidden');
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function num(v){ return (v === null || v === undefined) ? '' : v; }
 function toBase64(str){
   const bytes = new TextEncoder().encode(str);
   let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b));
@@ -480,15 +599,15 @@ function downloadTemplate(){
     '北京,STANDARD,工伤,7162,35811,0.002,0,0,0',
     '北京,STANDARD,医疗,7162,35811,0.10,0.02,0,3',
     '北京,STANDARD,公积金,2420,33891,0.12,0.12,0,0',
-    '深圳,STANDARD,养老,4492,26421,0.17,0.08,0,0',
-    '深圳,NONLOCAL,养老,4492,26421,0.16,0.08,0,0',
+    '深圳,SHENZHEN_HUKOU,养老,4775,27549,0.17,0.08,0,0',
+    '深圳,FEI_SHENZHEN_HUKOU,养老,4775,27549,0.16,0.08,0,0',
     '上海,STANDARD,养老,7384,36921,0.16,0.08,0,0',
     '上海,STANDARD,公积金,2590,36921,0.07,0.07,0,0'
   ];
   const notes = [
     '# 填写说明（以实际政策为准，本行以 # 开头会被忽略）：',
     '# 1. 城市：城市名称，如 北京、上海、深圳。',
-    '# 2. 方案：STANDARD=标准（深户等本地户籍），NONLOCAL=非本地户籍；单方案城市全部填 STANDARD。',
+    '# 2. 方案：STANDARD=标准（本地户籍）；深圳双方案填 SHENZHEN_HUKOU（深户）/ FEI_SHENZHEN_HUKOU（非深户）；其它城市单方案填 STANDARD。',
     '# 3. 险种：养老、失业、工伤、医疗、生育、公积金，顺序不强制但建议按此排列。',
     '# 4. 下限/上限：缴费基数上下限；无上限填 0 或留空（如深圳/广州工伤不封顶）。',
     '# 5. 单位比例/个人比例：小数形式，如 0.16 表示 16%。',
@@ -509,21 +628,21 @@ function saveUploadHistory(v, effective, note, csvText, data){
     list.unshift({ time: new Date().toISOString(), v, effective, note, rows: count, cities, csv: csvText });
     localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 50)));
     renderUploadHistory();
-  }catch(e){ console.error('保存上传记录失败', e); }
+  }catch(e){ console.error('保存操作记录失败', e); }
 }
 function renderUploadHistory(){
   const box = document.getElementById('history-list');
   if (!box) return;
   let list = [];
   try{ list = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }catch(e){}
-  if (!list.length){ box.innerHTML = '暂无上传记录（每次成功生成 index.html 后自动记录）'; return; }
+  if (!list.length){ box.innerHTML = '暂无操作记录（每次保存生效后会自动记录）'; return; }
   box.innerHTML = list.map((h, i) => {
     const t = new Date(h.time);
     const timeStr = t.toLocaleString('zh-CN', { hour12: false });
     return '<div class="history-item">' +
       '<div class="hi-head"><span><b>' + (h.v || '—') + '</b> · ' + (h.effective || '未填生效区间') + '</span><span>' + timeStr + '</span></div>' +
       '<div class="hi-meta">' + (h.cities || 0) + ' 个城市 / ' + (h.rows || 0) + ' 条参数' + (h.note ? ' · ' + h.note : '') + '</div>' +
-      '<div class="hi-actions"><button class="ghost" onclick="downloadOriginalCsv(' + i + ')">下载原始 CSV</button></div>' +
+      '<div class="hi-actions"><button class="ghost" onclick="downloadOriginalCsv(' + i + ')">下载数据快照</button></div>' +
       '</div>';
   }).join('');
 }
