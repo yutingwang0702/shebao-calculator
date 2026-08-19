@@ -38,9 +38,11 @@
   th:first-child, td:first-child { text-align:left; }
   .rate-detail { font-size:12.5px; }
   .rate-detail th:nth-child(1), .rate-detail td:nth-child(1),
-  .rate-detail th:nth-child(2), .rate-detail td:nth-child(2) { text-align:left; }
+  .rate-detail th:nth-child(2), .rate-detail td:nth-child(2),
+  .rate-detail th:nth-child(9), .rate-detail td:nth-child(9) { text-align:left; }
   .rate-detail th, .rate-detail td { white-space:nowrap; }
   #rate-main { overflow-x:auto; }
+  .scheme-card input[type=date] { width:134px; }
   th { background:#f7f9fc; color:#5a6172; font-weight:600; }
   tr.disabled td { color:#9aa3b2; }
   .note { background:#fff8e6; border:1px solid #ffe2a8; border-radius:8px; padding:10px 12px; font-size:12px; color:#7a5b00; margin-top:12px; line-height:1.6; }
@@ -315,7 +317,7 @@ function renderRateMain(){
     const schemeTxt = (Object.keys(schemes).length>1) ? (SCHEME_LABEL[scheme]||scheme) : '标准';
     html += '<h4 style="margin:16px 0 8px;font-size:15px;color:#1f2430;">'+city+' · '+schemeTxt+'</h4>';
     html += '<table class="rate-detail"><thead><tr>'
-          + '<th>参保方案</th><th>险种</th><th>基数下限</th><th>基数上限</th><th>单位比例</th><th>个人比例</th><th>公司名义比例</th><th>个人名义比例</th>'
+          + '<th>参保方案</th><th>险种</th><th>基数下限</th><th>基数上限</th><th>单位比例</th><th>个人比例</th><th>公司名义比例</th><th>个人名义比例</th><th>险种生效日期</th>'
           + '</tr></thead><tbody>';
     ins.forEach(x => {
       html += '<tr><td>'+schemeTxt+'</td>'
@@ -325,7 +327,8 @@ function renderRateMain(){
             + '<td>'+pct(x.company_rate)+'</td>'
             + '<td>'+pct(x.personal_rate)+'</td>'
             + '<td>'+pct(cr)+'</td>'
-            + '<td>'+pct(pr)+'</td></tr>';
+            + '<td>'+pct(pr)+'</td>'
+            + '<td class="ed">'+(x.effective_date || '—')+'</td></tr>';
     });
     html += '</tbody></table>';
   });
@@ -454,7 +457,8 @@ function _parseCsvRecords(text){
       company_rate: cr.trim() ? parseFloat(cr) : 0,
       personal_rate: pr.trim() ? parseFloat(pr) : 0,
       company_fixed: cf.trim() ? parseFloat(cf) : 0,
-      personal_fixed: pf.trim() ? parseFloat(pf) : 0
+      personal_fixed: pf.trim() ? parseFloat(pf) : 0,
+      effective_date: c.length >= 10 ? c[9].trim() : undefined   // 未提供时保留线上已有值
     };
     const nums = [rec.lower, rec.upper, rec.company_rate, rec.personal_rate, rec.company_fixed, rec.personal_fixed];
     if (nums.some(v => v !== null && isNaN(v))) warns.push('数值非法：' + c.join(','));
@@ -469,7 +473,10 @@ function mergeRecordsInto(target, recs){
     target[r.scheme] = target[r.scheme] || [];
     const arr = target[r.city][r.scheme];
     const i = arr.findIndex(x => x.type === r.type);
-    if (i >= 0) arr[i] = r; else arr.push(r);
+    if (i >= 0){
+      if (r.effective_date === undefined) delete r.effective_date; // CSV 未含生效日期列时保留原值
+      Object.assign(arr[i], r);
+    } else arr.push(r);
   }
 }
 function _onCsv(){
@@ -514,7 +521,7 @@ function renderCityEditor(city){
     const rows = EDITOR_DATA[city][scheme];
     html += '<div class="scheme-card"><div class="sc-head"><span>' + city + ' · ' + label + '</span>' +
       '<button class="ghost" onclick="addInsRow(\'' + city + '\',\'' + scheme + '\')">+ 险种</button></div>';
-    html += '<table><thead><tr><th>险种</th><th>基数下限</th><th>基数上限</th><th>单位比例</th><th>个人比例</th><th>单位固定</th><th>个人固定</th><th></th></tr></thead><tbody>';
+    html += '<table><thead><tr><th>险种</th><th>基数下限</th><th>基数上限</th><th>单位比例</th><th>个人比例</th><th>单位固定</th><th>个人固定</th><th>险种生效日期</th><th></th></tr></thead><tbody>';
     rows.forEach((ins, idx) => {
       html += '<tr>' +
         '<td><input value="' + esc(ins.type) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'type\',this.value)"></td>' +
@@ -524,6 +531,7 @@ function renderCityEditor(city){
         '<td><input type="number" step="any" value="' + num(ins.personal_rate) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'personal_rate\',this.value)"></td>' +
         '<td><input type="number" step="any" value="' + num(ins.company_fixed) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'company_fixed\',this.value)"></td>' +
         '<td><input type="number" step="any" value="' + num(ins.personal_fixed) + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'personal_fixed\',this.value)"></td>' +
+        '<td><input type="date" value="' + (ins.effective_date || '') + '" onchange="editField(\'' + city + '\',\'' + scheme + '\',' + idx + ',\'effective_date\',this.value)"></td>' +
         '<td><button class="row-del" title="删除此险种" onclick="delInsRow(\'' + city + '\',\'' + scheme + '\',' + idx + ')">×</button></td>' +
         '</tr>';
     });
@@ -533,11 +541,11 @@ function renderCityEditor(city){
 }
 function editField(city, scheme, idx, field, val){
   const ins = EDITOR_DATA[city][scheme][idx];
-  if (field === 'type') ins[field] = val.trim();
+  if (field === 'type' || field === 'effective_date') ins[field] = val.trim();
   else ins[field] = val.trim() === '' ? (field === 'lower' || field === 'upper' ? null : 0) : parseFloat(val);
 }
 function addInsRow(city, scheme){
-  EDITOR_DATA[city][scheme].push({ city, scheme, type: '新险种', lower: null, upper: null, company_rate: 0, personal_rate: 0, company_fixed: 0, personal_fixed: 0 });
+  EDITOR_DATA[city][scheme].push({ city, scheme, type: '新险种', lower: null, upper: null, company_rate: 0, personal_rate: 0, company_fixed: 0, personal_fixed: 0, effective_date: '' });
   renderCityEditor(city);
 }
 function delInsRow(city, scheme, idx){
@@ -549,7 +557,7 @@ function addCity(){
   if (!name) return;
   const c = name.trim();
   if (EDITOR_DATA[c]){ selectCity(c); return; }
-  EDITOR_DATA[c] = { STANDARD: [{ city: c, scheme: 'STANDARD', type: '养老', lower: null, upper: null, company_rate: 0, personal_rate: 0, company_fixed: 0, personal_fixed: 0 }] };
+  EDITOR_DATA[c] = { STANDARD: [{ city: c, scheme: 'STANDARD', type: '养老', lower: null, upper: null, company_rate: 0, personal_rate: 0, company_fixed: 0, personal_fixed: 0, effective_date: '' }] };
   renderEditor();
   selectCity(c);
 }
@@ -559,10 +567,10 @@ function resetEditor(){
   document.getElementById('editor-status').textContent = '已重置为线上最新数据';
 }
 function dataToCsv(data){
-  let csv = '城市,方案,险种,基数下限,基数上限,单位比例,个人比例,单位固定值,个人固定值\n';
+  let csv = '城市,方案,险种,基数下限,基数上限,单位比例,个人比例,单位固定值,个人固定值,险种生效日期\n';
   Object.keys(data).forEach(city => Object.keys(data[city]).forEach(scheme => {
     data[city][scheme].forEach(ins => {
-      csv += [city, scheme, ins.type, num(ins.lower), num(ins.upper), num(ins.company_rate), num(ins.personal_rate), num(ins.company_fixed), num(ins.personal_fixed)].join(',') + '\n';
+      csv += [city, scheme, ins.type, num(ins.lower), num(ins.upper), num(ins.company_rate), num(ins.personal_rate), num(ins.company_fixed), num(ins.personal_fixed), ins.effective_date || ''].join(',') + '\n';
     });
   }));
   return csv;
@@ -624,17 +632,17 @@ async function pushDataJson(jsonStr, version){
   return await resp.json();
 }
 function downloadTemplate(){
-  const header = '城市,方案,险种,下限,上限,单位比例,个人比例,单位固定,个人固定';
+  const header = '城市,方案,险种,下限,上限,单位比例,个人比例,单位固定,个人固定,生效日期';
   const rows = [
-    '北京,STANDARD,养老,7162,35811,0.16,0.08,0,0',
-    '北京,STANDARD,失业,7162,35811,0.005,0.005,0,0',
-    '北京,STANDARD,工伤,7162,35811,0.002,0,0,0',
-    '北京,STANDARD,医疗,7162,35811,0.10,0.02,0,3',
-    '北京,STANDARD,公积金,2420,33891,0.12,0.12,0,0',
-    '深圳,SHENZHEN_HUKOU,养老,4775,27549,0.17,0.08,0,0',
-    '深圳,FEI_SHENZHEN_HUKOU,养老,4775,27549,0.16,0.08,0,0',
-    '上海,STANDARD,养老,7384,36921,0.16,0.08,0,0',
-    '上海,STANDARD,公积金,2590,36921,0.07,0.07,0,0'
+    '北京,STANDARD,养老,7162,35811,0.16,0.08,0,0,2026-07-01',
+    '北京,STANDARD,失业,7162,35811,0.005,0.005,0,0,2026-07-01',
+    '北京,STANDARD,工伤,7162,35811,0.002,0,0,0,2026-07-01',
+    '北京,STANDARD,医疗,7162,35811,0.10,0.02,0,3,2026-07-01',
+    '北京,STANDARD,公积金,2420,33891,0.12,0.12,0,0,2026-07-01',
+    '深圳,SHENZHEN_HUKOU,养老,4775,27549,0.17,0.08,0,0,2026-07-01',
+    '深圳,FEI_SHENZHEN_HUKOU,养老,4775,27549,0.16,0.08,0,0,2026-07-01',
+    '上海,STANDARD,养老,7384,36921,0.16,0.08,0,0,2026-07-01',
+    '上海,STANDARD,公积金,2590,36921,0.07,0.07,0,0,2026-07-01'
   ];
   const notes = [
     '# 填写说明（以实际政策为准，本行以 # 开头会被忽略）：',
@@ -644,8 +652,9 @@ function downloadTemplate(){
     '# 4. 下限/上限：缴费基数上下限；无上限填 0 或留空（如深圳/广州工伤不封顶）。',
     '# 5. 单位比例/个人比例：小数形式，如 0.16 表示 16%。',
     '# 6. 单位固定/个人固定：固定金额（如北京医疗大病 +3），无固定值填 0。',
-    '# 7. 不需要的险种直接不写该行即可（已删除原「来源」列，不再有启用/停用的概念）。',
-    '# 8. 第一行为表头，不会被解析；建议保留。'
+    '# 7. 生效日期：该险种本轮政策的生效日期，格式 yyyy-mm-dd（如 2026-07-01）；留空表示未录入。',
+    '# 8. 不需要的险种直接不写该行即可（已删除原「来源」列，不再有启用/停用的概念）。',
+    '# 9. 第一行为表头，不会被解析；建议保留。'
   ];
   const csv = [header].concat(rows).concat(notes).join('\n') + '\n';
   const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8;' });
