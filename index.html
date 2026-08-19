@@ -36,7 +36,11 @@
   table { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
   th, td { padding:9px 10px; border-bottom:1px solid #eef1f6; text-align:right; }
   th:first-child, td:first-child { text-align:left; }
-  #rate-table th:nth-child(2), #rate-table td:nth-child(2) { text-align:left; }
+  .rate-detail { font-size:12.5px; }
+  .rate-detail th:nth-child(1), .rate-detail td:nth-child(1),
+  .rate-detail th:nth-child(2), .rate-detail td:nth-child(2) { text-align:left; }
+  .rate-detail th, .rate-detail td { white-space:nowrap; }
+  #rate-main { overflow-x:auto; }
   th { background:#f7f9fc; color:#5a6172; font-weight:600; }
   tr.disabled td { color:#9aa3b2; }
   .note { background:#fff8e6; border:1px solid #ffe2a8; border-radius:8px; padding:10px 12px; font-size:12px; color:#7a5b00; margin-top:12px; line-height:1.6; }
@@ -136,11 +140,11 @@
 
   <div id="view-rate" class="hidden">
     <div class="card">
-      <table id="rate-table">
-        <thead><tr><th>城市</th><th>参保方案</th><th>公司名义比例</th><th>个人名义比例</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="note">名义比例 = 各险种单位/个人比例简单加总（不含固定额，未卡上下限），仅供快速比对；实际负担请以「成本测算」页的合计金额为准。</div>
+      <div class="editor-layout">
+        <div id="rate-city-list" class="city-list"></div>
+        <div id="rate-main" class="editor-main"></div>
+      </div>
+      <div class="note">名义比例 = 各险种单位/个人比例简单加总（不含固定额，未卡上下限），仅供快速比对；实际负担请以「成本测算」页的合计金额为准。左侧点选城市，右侧展示该城市各参保方案下每个险种的基数与比例。</div>
     </div>
   </div>
 
@@ -288,16 +292,44 @@ function run(){
     '口径说明：① 缴费基数先按工资卡各险种上下限（低于取下限、高于取上限）；② 金额 = 基数×比例 + 固定值，逐险种四舍五入后求和，<b>不先求和再舍入</b>；③ 社保到分、公积金到元；④ 名义比例仅供快速比对，实际以合计金额为准。';
   window.__last = {city, scheme, salary, r};
 }
+let RATE_CITY = null;
 function renderRate(){
-  const tb = document.querySelector('#rate-table tbody'); tb.innerHTML = '';
-  Object.keys(DATA).forEach(city => {
-    Object.keys(DATA[city]).forEach(scheme => {
-      let cr=0, pr=0;
-      DATA[city][scheme].forEach(ins => { cr+=ins.company_rate; pr+=ins.personal_rate; });
-      const schemeTxt = (Object.keys(DATA[city]).length>1) ? (SCHEME_LABEL[scheme]||scheme) : '标准';
-      tb.innerHTML += '<tr'+(city==='深圳'?' style="background:#f0f6ff"':'')+'><td>'+city+'</td><td>'+schemeTxt+'</td><td>'+pct(cr)+'</td><td>'+pct(pr)+'</td></tr>';
+  if (!RATE_CITY || !DATA[RATE_CITY]) RATE_CITY = Object.keys(DATA)[0];
+  const listEl = document.getElementById('rate-city-list');
+  listEl.innerHTML = Object.keys(DATA).map(city =>
+    '<div class="ci'+(city===RATE_CITY?' active':'')+'" onclick="selectRateCity(\''+city+'\')">'+city+'</div>'
+  ).join('');
+  renderRateMain();
+}
+function selectRateCity(city){ RATE_CITY = city; renderRate(); }
+function renderRateMain(){
+  const main = document.getElementById('rate-main');
+  const city = RATE_CITY;
+  if (!city || !DATA[city]){ main.innerHTML = '<p class="sub">请选择左侧城市</p>'; return; }
+  const schemes = DATA[city];
+  let html = '';
+  Object.keys(schemes).forEach(scheme => {
+    const ins = schemes[scheme];
+    let cr=0, pr=0;
+    ins.forEach(x => { cr += x.company_rate; pr += x.personal_rate; });
+    const schemeTxt = (Object.keys(schemes).length>1) ? (SCHEME_LABEL[scheme]||scheme) : '标准';
+    html += '<h4 style="margin:16px 0 8px;font-size:15px;color:#1f2430;">'+city+' · '+schemeTxt+'</h4>';
+    html += '<table class="rate-detail"><thead><tr>'
+          + '<th>参保方案</th><th>险种</th><th>基数下限</th><th>基数上限</th><th>单位比例</th><th>个人比例</th><th>公司名义比例</th><th>个人名义比例</th>'
+          + '</tr></thead><tbody>';
+    ins.forEach(x => {
+      html += '<tr><td>'+schemeTxt+'</td>'
+            + '<td>'+x.type+'</td>'
+            + '<td>'+(x.lower!=null?fmt(x.lower,2):'—')+'</td>'
+            + '<td>'+(x.upper!=null?fmt(x.upper,2):'不封顶')+'</td>'
+            + '<td>'+pct(x.company_rate)+'</td>'
+            + '<td>'+pct(x.personal_rate)+'</td>'
+            + '<td>'+pct(cr)+'</td>'
+            + '<td>'+pct(pr)+'</td></tr>';
     });
+    html += '</tbody></table>';
   });
+  main.innerHTML = html;
 }
 function exportCSV(){
   if (!window.__last) return;
