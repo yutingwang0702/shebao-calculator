@@ -6,67 +6,68 @@
           "city": "福州",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4043.0,
-          "upper": 22607.0,
+          "lower": 4043,
+          "upper": 22607,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0,
+          "effective_date": "2026-08-19"
         },
         {
           "city": "福州",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4043.0,
-          "upper": 22164.0,
+          "lower": 4043,
+          "upper": 22164,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "福州",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4414.0,
-          "upper": 22070.0,
+          "lower": 4414,
+          "upper": 22070,
           "company_rate": 0.007,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "福州",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4579.0,
-          "upper": 22893.0,
+          "lower": 4579,
+          "upper": 22893,
           "company_rate": 0.08,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "福州",
           "scheme": "STANDARD",
           "type": "生育",
-          "lower": 4043.0,
-          "upper": 22607.0,
+          "lower": 4043,
+          "upper": 22607,
           "company_rate": 0.007,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "福州",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2195.0,
-          "upper": 32430.0,
+          "lower": 2195,
+          "upper": 32430,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -76,56 +77,56 @@
           "city": "北京",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 7162.0,
-          "upper": 35811.0,
+          "lower": 7162,
+          "upper": 35811,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "北京",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 7162.0,
-          "upper": 35811.0,
+          "lower": 7162,
+          "upper": 35811,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "北京",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 7162.0,
-          "upper": 35811.0,
+          "lower": 7162,
+          "upper": 35811,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "北京",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 7162.0,
-          "upper": 35811.0,
+          "lower": 7162,
+          "upper": 35811,
           "company_rate": 0.098,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 3.0
+          "company_fixed": 0,
+          "personal_fixed": 3
         },
         {
           "city": "北京",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2540.0,
-          "upper": 35811.0,
+          "lower": 2540,
+          "upper": 35811,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -135,67 +136,67 @@
           "city": "苏州",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "苏州",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "苏州",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "苏州",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.07,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 5.0
+          "company_fixed": 0,
+          "personal_fixed": 5
         },
         {
           "city": "苏州",
           "scheme": "STANDARD",
           "type": "生育",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.008,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "苏州",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 4952.0,
-          "upper": 40600.0,
+          "lower": 4952,
+          "upper": 40600,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -205,67 +206,67 @@
           "city": "南京",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "南京",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "南京",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "南京",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.07,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 10.0
+          "company_fixed": 0,
+          "personal_fixed": 10
         },
         {
           "city": "南京",
           "scheme": "STANDARD",
           "type": "生育",
-          "lower": 4952.0,
-          "upper": 24762.0,
+          "lower": 4952,
+          "upper": 24762,
           "company_rate": 0.008,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "南京",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2660.0,
-          "upper": 42400.0,
+          "lower": 2660,
+          "upper": 42400,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -275,56 +276,56 @@
           "city": "成都",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4588.0,
-          "upper": 22938.0,
+          "lower": 4588,
+          "upper": 22938,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "成都",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4588.0,
-          "upper": 22938.0,
+          "lower": 4588,
+          "upper": 22938,
           "company_rate": 0.006,
           "personal_rate": 0.004,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "成都",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4588.0,
-          "upper": 22938.0,
+          "lower": 4588,
+          "upper": 22938,
           "company_rate": 0.0024,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "成都",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4588.0,
-          "upper": 22938.0,
+          "lower": 4588,
+          "upper": 22938,
           "company_rate": 0.083,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "成都",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2330.0,
-          "upper": 31378.0,
+          "lower": 2330,
+          "upper": 31378,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -334,67 +335,67 @@
           "city": "深圳",
           "scheme": "SHENZHEN_HUKOU",
           "type": "养老",
-          "lower": 4775.0,
-          "upper": 27549.0,
+          "lower": 4775,
+          "upper": 27549,
           "company_rate": 0.17,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "SHENZHEN_HUKOU",
           "type": "失业",
-          "lower": 2520.0,
-          "upper": 48471.0,
+          "lower": 2520,
+          "upper": 48471,
           "company_rate": 0.008,
           "personal_rate": 0.002,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "SHENZHEN_HUKOU",
           "type": "工伤",
-          "lower": 2520.0,
+          "lower": 2520,
           "upper": null,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "SHENZHEN_HUKOU",
           "type": "医疗",
-          "lower": 6727.0,
-          "upper": 33633.0,
+          "lower": 6727,
+          "upper": 33633,
           "company_rate": 0.06,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "SHENZHEN_HUKOU",
           "type": "生育",
-          "lower": 4775.0,
-          "upper": 27549.0,
+          "lower": 4775,
+          "upper": 27549,
           "company_rate": 0.005,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "SHENZHEN_HUKOU",
           "type": "公积金",
-          "lower": 2520.0,
-          "upper": 48471.0,
+          "lower": 2520,
+          "upper": 48471,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ],
       "FEI_SHENZHEN_HUKOU": [
@@ -402,67 +403,67 @@
           "city": "深圳",
           "scheme": "FEI_SHENZHEN_HUKOU",
           "type": "养老",
-          "lower": 4775.0,
-          "upper": 27549.0,
+          "lower": 4775,
+          "upper": 27549,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "FEI_SHENZHEN_HUKOU",
           "type": "失业",
-          "lower": 2520.0,
-          "upper": 48471.0,
+          "lower": 2520,
+          "upper": 48471,
           "company_rate": 0.008,
           "personal_rate": 0.002,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "FEI_SHENZHEN_HUKOU",
           "type": "工伤",
-          "lower": 2520.0,
+          "lower": 2520,
           "upper": null,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "FEI_SHENZHEN_HUKOU",
           "type": "医疗",
-          "lower": 6727.0,
-          "upper": 33633.0,
+          "lower": 6727,
+          "upper": 33633,
           "company_rate": 0.06,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "FEI_SHENZHEN_HUKOU",
           "type": "生育",
-          "lower": 4775.0,
-          "upper": 27549.0,
+          "lower": 4775,
+          "upper": 27549,
           "company_rate": 0.005,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "深圳",
           "scheme": "FEI_SHENZHEN_HUKOU",
           "type": "公积金",
-          "lower": 2520.0,
-          "upper": 48471.0,
+          "lower": 2520,
+          "upper": 48471,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -472,56 +473,56 @@
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4498.0,
-          "upper": 22488.0,
+          "lower": 4498,
+          "upper": 22488,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4498.0,
-          "upper": 22488.0,
+          "lower": 4498,
+          "upper": 22488,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4498.0,
-          "upper": 22488.0,
+          "lower": 4498,
+          "upper": 22488,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4498.0,
-          "upper": 22488.0,
+          "lower": 4498,
+          "upper": 22488,
           "company_rate": 0.087,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 5.0
+          "company_fixed": 0,
+          "personal_fixed": 5
         },
         {
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2400.0,
+          "lower": 2400,
           "upper": 36072.2,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -531,56 +532,56 @@
           "city": "重庆",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4404.0,
-          "upper": 22017.0,
+          "lower": 4404,
+          "upper": 22017,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "重庆",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4404.0,
-          "upper": 22017.0,
+          "lower": 4404,
+          "upper": 22017,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "重庆",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4404.0,
-          "upper": 22017.0,
+          "lower": 4404,
+          "upper": 22017,
           "company_rate": 0.003,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "重庆",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4404.0,
-          "upper": 22017.0,
+          "lower": 4404,
+          "upper": 22017,
           "company_rate": 0.1,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 5.0
+          "company_fixed": 0,
+          "personal_fixed": 5
         },
         {
           "city": "重庆",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2330.0,
-          "upper": 31393.0,
+          "lower": 2330,
+          "upper": 31393,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -590,67 +591,67 @@
           "city": "天津",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 5124.0,
-          "upper": 25620.0,
+          "lower": 5124,
+          "upper": 25620,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "天津",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 5124.0,
-          "upper": 25620.0,
+          "lower": 5124,
+          "upper": 25620,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "天津",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 5124.0,
-          "upper": 25620.0,
+          "lower": 5124,
+          "upper": 25620,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "天津",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 5124.0,
-          "upper": 25620.0,
+          "lower": 5124,
+          "upper": 25620,
           "company_rate": 0.1,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 22.0
+          "company_fixed": 0,
+          "personal_fixed": 22
         },
         {
           "city": "天津",
           "scheme": "STANDARD",
           "type": "生育",
-          "lower": 5124.0,
-          "upper": 25620.0,
+          "lower": 5124,
+          "upper": 25620,
           "company_rate": 0.005,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "天津",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2510.0,
-          "upper": 28917.0,
+          "lower": 2510,
+          "upper": 28917,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -660,56 +661,56 @@
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4986.0,
-          "upper": 25299.0,
+          "lower": 4986,
+          "upper": 25299,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4986.0,
-          "upper": 25299.0,
+          "lower": 4986,
+          "upper": 25299,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4986.0,
-          "upper": 25299.0,
+          "lower": 4986,
+          "upper": 25299,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4986.0,
-          "upper": 25299.0,
+          "lower": 4986,
+          "upper": 25299,
           "company_rate": 0.095,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2660.0,
-          "upper": 40694.0,
+          "lower": 2660,
+          "upper": 40694,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -719,67 +720,67 @@
           "city": "郑州",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 3831.0,
-          "upper": 19155.0,
+          "lower": 3831,
+          "upper": 19155,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "郑州",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 3831.0,
-          "upper": 19155.0,
+          "lower": 3831,
+          "upper": 19155,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "郑州",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 3831.0,
-          "upper": 19155.0,
+          "lower": 3831,
+          "upper": 19155,
           "company_rate": 0.0016,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "郑州",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 3831.0,
-          "upper": 19155.0,
+          "lower": 3831,
+          "upper": 19155,
           "company_rate": 0.07,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "郑州",
           "scheme": "STANDARD",
           "type": "生育",
-          "lower": 3831.0,
-          "upper": 19155.0,
+          "lower": 3831,
+          "upper": 19155,
           "company_rate": 0.01,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "郑州",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2350.0,
-          "upper": 27520.0,
+          "lower": 2350,
+          "upper": 27520,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -789,56 +790,56 @@
           "city": "济南",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "济南",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "济南",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.0016,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "济南",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.08,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "济南",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2400.0,
-          "upper": 33902.0,
+          "lower": 2400,
+          "upper": 33902,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -848,41 +849,41 @@
           "city": "西安",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4650.0,
-          "upper": 23250.0,
+          "lower": 4650,
+          "upper": 23250,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "西安",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4650.0,
-          "upper": 23250.0,
+          "lower": 4650,
+          "upper": 23250,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "西安",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4650.0,
-          "upper": 23250.0,
+          "lower": 4650,
+          "upper": 23250,
           "company_rate": 0.0032,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "西安",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4990.0,
-          "upper": 24948.0,
+          "lower": 4990,
+          "upper": 24948,
           "company_rate": 0.07,
           "personal_rate": 0.02,
           "company_fixed": 6.4,
@@ -892,12 +893,12 @@
           "city": "西安",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2376.0,
-          "upper": 32726.0,
+          "lower": 2376,
+          "upper": 32726,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -907,56 +908,56 @@
           "city": "沈阳",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4359.0,
-          "upper": 21792.0,
+          "lower": 4359,
+          "upper": 21792,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "沈阳",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4359.0,
-          "upper": 21792.0,
+          "lower": 4359,
+          "upper": 21792,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "沈阳",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4359.0,
-          "upper": 21792.0,
+          "lower": 4359,
+          "upper": 21792,
           "company_rate": 0.004,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "沈阳",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4846.0,
-          "upper": 24228.0,
+          "lower": 4846,
+          "upper": 24228,
           "company_rate": 0.086,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "沈阳",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2230.0,
-          "upper": 29523.0,
+          "lower": 2230,
+          "upper": 29523,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -966,56 +967,56 @@
           "city": "广州",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 5510.0,
-          "upper": 27549.0,
+          "lower": 5510,
+          "upper": 27549,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "广州",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 2500.0,
-          "upper": 42933.0,
+          "lower": 2500,
+          "upper": 42933,
           "company_rate": 0.008,
           "personal_rate": 0.002,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "广州",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 2500.0,
+          "lower": 2500,
           "upper": null,
           "company_rate": 0.002,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "广州",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 6234.0,
-          "upper": 31170.0,
+          "lower": 6234,
+          "upper": 31170,
           "company_rate": 0.0685,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "广州",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2500.0,
-          "upper": 41697.0,
+          "lower": 2500,
+          "upper": 41697,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -1025,56 +1026,56 @@
           "city": "长沙",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4072.0,
-          "upper": 20361.0,
+          "lower": 4072,
+          "upper": 20361,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "长沙",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4072.0,
-          "upper": 20361.0,
+          "lower": 4072,
+          "upper": 20361,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "长沙",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4072.0,
-          "upper": 20361.0,
+          "lower": 4072,
+          "upper": 20361,
           "company_rate": 0.006,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "长沙",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4072.0,
-          "upper": 20361.0,
+          "lower": 4072,
+          "upper": 20361,
           "company_rate": 0.087,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 15.0
+          "company_fixed": 0,
+          "personal_fixed": 15
         },
         {
           "city": "长沙",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2200.0,
-          "upper": 32744.0,
+          "lower": 2200,
+          "upper": 32744,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -1084,56 +1085,56 @@
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4311.0,
-          "upper": 21556.0,
+          "lower": 4311,
+          "upper": 21556,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4311.0,
-          "upper": 21556.0,
+          "lower": 4311,
+          "upper": 21556,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4311.0,
-          "upper": 21556.0,
+          "lower": 4311,
+          "upper": 21556,
           "company_rate": 0.004,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4311.0,
-          "upper": 21556.0,
+          "lower": 4311,
+          "upper": 21556,
           "company_rate": 0.064,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2320.0,
-          "upper": 31564.0,
+          "lower": 2320,
+          "upper": 31564,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -1143,56 +1144,56 @@
           "city": "上海",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 7460.0,
-          "upper": 37302.0,
+          "lower": 7460,
+          "upper": 37302,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "上海",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 7460.0,
-          "upper": 37302.0,
+          "lower": 7460,
+          "upper": 37302,
           "company_rate": 0.005,
           "personal_rate": 0.005,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "上海",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 7460.0,
-          "upper": 37302.0,
+          "lower": 7460,
+          "upper": 37302,
           "company_rate": 0.0032,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "上海",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 7460.0,
-          "upper": 37302.0,
+          "lower": 7460,
+          "upper": 37302,
           "company_rate": 0.09,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "上海",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2690.0,
-          "upper": 37302.0,
+          "lower": 2690,
+          "upper": 37302,
           "company_rate": 0.07,
           "personal_rate": 0.07,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -1202,56 +1203,56 @@
           "city": "青岛",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "青岛",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "青岛",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.0032,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "青岛",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4504.0,
-          "upper": 22518.0,
+          "lower": 4504,
+          "upper": 22518,
           "company_rate": 0.08,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "青岛",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2400.0,
+          "lower": 2400,
           "upper": 34342.8,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     },
@@ -1265,8 +1266,8 @@
           "upper": 21973.5,
           "company_rate": 0.16,
           "personal_rate": 0.08,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "贵阳",
@@ -1276,8 +1277,8 @@
           "upper": 21973.5,
           "company_rate": 0.007,
           "personal_rate": 0.003,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "贵阳",
@@ -1286,9 +1287,9 @@
           "lower": 5127.15,
           "upper": 21973.5,
           "company_rate": 0.005,
-          "personal_rate": 0.0,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "personal_rate": 0,
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "贵阳",
@@ -1298,19 +1299,19 @@
           "upper": 21973.5,
           "company_rate": 0.085,
           "personal_rate": 0.02,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         },
         {
           "city": "贵阳",
           "scheme": "STANDARD",
           "type": "公积金",
-          "lower": 2130.0,
-          "upper": 25980.0,
+          "lower": 2130,
+          "upper": 25980,
           "company_rate": 0.12,
           "personal_rate": 0.12,
-          "company_fixed": 0.0,
-          "personal_fixed": 0.0
+          "company_fixed": 0,
+          "personal_fixed": 0
         }
       ]
     }
@@ -1330,7 +1331,7 @@
       "FEI_SHENZHEN_HUKOU": "非深圳户籍（非深户）"
     },
     "current": {
-      "v": "v1",
+      "v": "v2",
       "effective": "2026.07–2027.06"
     },
     "versions": [
@@ -1339,6 +1340,12 @@
         "date": "2026-07-01",
         "effective": "2026.07–2027.06",
         "note": "初始版本：纳入深圳户籍双方案(深户17%/非深户16%)、郑州工伤0.16%、成都工伤0.24%、深圳/广州工伤不封顶、贵阳医疗下限5859.6 等 Q1–Q5 澄清结论；126 条参数由现状 Excel 反解生成。"
+      },
+      {
+        "v": "v2",
+        "date": "2026-08-19",
+        "effective": "2026.07–2027.06",
+        "note": ""
       }
     ]
   }
