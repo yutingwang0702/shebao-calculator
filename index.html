@@ -473,6 +473,7 @@ function _parseCsvRecords(text){
   for (const c of rows){
     if (c.length < 9){ warns.push('列数不足9：' + c.join(',')); continue; }
     const [city, scheme, type, lo, hi, cr, pr, cf, pf] = c;
+    if (!city.trim() || !scheme.trim() || !type.trim()){ warns.push('城市/方案/险种为空，已跳过：' + c.join(',')); continue; }
     const rec = {
       city: city.trim(), scheme: scheme.trim(), type: type.trim(),
       lower: lo.trim() ? parseFloat(lo) : null,
@@ -493,7 +494,7 @@ function _parseCsvRecords(text){
 function mergeRecordsInto(target, recs){
   for (const r of recs){
     target[r.city] = target[r.city] || {};
-    target[r.scheme] = target[r.scheme] || [];
+    target[r.city][r.scheme] = target[r.city][r.scheme] || [];
     const arr = target[r.city][r.scheme];
     const i = arr.findIndex(x => x.type === r.type);
     if (i >= 0){
