@@ -213,7 +213,7 @@
     <div class="note">操作说明：① 解锁后左侧选择城市，右侧直接修改各险种的基数上下限、单位/个人比例、固定值、险种生效日期；② 点「保存并生效」：若本机已配置 GitHub Token 会直接推送上线（约 1 分钟后全员刷新可见）；若未配置或推送失败，会<b>自动下载 data.json 并复制内容</b>，把内容发给管理员即可上线，<b>改动不会丢失</b>；③ 没改的城市原样保留，不会动；④ 也可点「批量导入 CSV」做整体替换/合并；⑤ 每次保存都会在「操作记录」里留痕，可下载当时数据快照。</div>
   </div>
 </div>
-<footer>本工具仅供候选人社保公积金粗略估算，不构成薪资最终核算依据；个税未计入。<span>工具版本 2026.10.13c</span><span id="ver-foot"></span></footer>
+<footer>本工具仅供候选人社保公积金粗略估算，不构成薪资最终核算依据；个税未计入。<span>工具版本 2026.10.13d</span><span id="ver-foot"></span></footer>
 <div id="toast"></div>
 
 <script>
@@ -546,8 +546,11 @@ function _onCsv(){
     mergeRecordsInto(EDITOR_DATA, recs);
     const sharedCities = expandSharedStandard(EDITOR_DATA);
     const cities = new Set(recs.map(r => r.city));
+    // 对比线上数据，列出本次新增的城市，便于发现「北京市 vs 北京」这类名称不一致
+    const newCities = Object.keys(EDITOR_DATA).filter(c => !DATA[c]);
     pv.innerHTML = '已合并 ' + cities.size + ' 个城市 / ' + recs.length + ' 条参数到编辑区' +
       (sharedCities.length ? '<br>ℹ️ 已自动把 STANDARD 共享险种同步到 ' + sharedCities.join('、') + ' 的各户籍方案' : '') +
+      (newCities.length ? '<br>🆕 本次新增城市 ' + newCities.length + ' 个：<b>' + newCities.join('、') + '</b>　如其中某个城市线上其实已有，说明 CSV 写法不一致（如「北京市」vs「北京」、多了空格），请改 CSV 后重新导入' : '') +
       (warns.length ? '<br>⚠️ ' + warns.join('<br>') : '') + '<br>点「保存并生效」才会真正推送上线。';
     renderEditor();
     if (document.getElementById('editor-city') && document.getElementById('editor-city').value)
