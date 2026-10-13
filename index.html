@@ -213,7 +213,7 @@
     <div class="note">操作说明：① 解锁后左侧选择城市，右侧直接修改各险种的基数上下限、单位/个人比例、固定值、险种生效日期；② 点「保存并生效」：若本机已配置 GitHub Token 会直接推送上线（约 1 分钟后全员刷新可见）；若未配置或推送失败，会<b>自动下载 data.json 并复制内容</b>，把内容发给管理员即可上线，<b>改动不会丢失</b>；③ 没改的城市原样保留，不会动；④ 也可点「批量导入 CSV」做整体替换/合并；⑤ 每次保存都会在「操作记录」里留痕，可下载当时数据快照。</div>
   </div>
 </div>
-<footer>本工具仅供候选人社保公积金粗略估算，不构成薪资最终核算依据；个税未计入。<span>工具版本 2026.10.13</span><span id="ver-foot"></span></footer>
+<footer>本工具仅供候选人社保公积金粗略估算，不构成薪资最终核算依据；个税未计入。<span>工具版本 2026.10.13b</span><span id="ver-foot"></span></footer>
 <div id="toast"></div>
 
 <script>
@@ -458,35 +458,69 @@ if (_drop){
 }
 function _read(f){
   const r = new FileReader();
-  r.onload = () => { _csvText = r.result; _onCsv(); };
-  r.readAsText(f, 'utf-8');
+  r.onload = () => {
+    const buf = r.result;
+    let text = new TextDecoder('utf-8').decode(buf);
+    // Excel 中文系统默认存 ANSI/GBK；UTF-8 解码出现替换字符时按 GBK 重解
+    if (text.indexOf('�') >= 0){
+      try { text = new TextDecoder('gb18030').decode(buf); } catch(e){}
+    }
+    _csvText = text; _onCsv();
+  };
+  r.readAsArrayBuffer(f);
 }
 function _parseCsv(text){
   return text.split(/\r?\n/).filter(l => {
     const t = l.trim();
     return t !== '' && t[0] !== '#';
-  }).slice(1).map(l => l.split(','));
+  }).slice(1).map(splitCsvLine);
+}
+// 简单引号感知分列：支持 Excel 给含逗号字段加引号的情况（如 "7,162"）
+function splitCsvLine(l){
+  const out=[]; let cur=''; let q=false;
+  for (let i=0;i<l.length;i++){
+    const ch=l[i];
+    if (q){ if (ch==='"'){ if (l[i+1]==='"'){ cur+='"'; i++; } else q=false; } else cur+=ch; }
+    else { if (ch==='"') q=true; else if (ch===','){ out.push(cur); cur=''; } else cur+=ch; }
+  }
+  out.push(cur);
+  return out;
 }
 // 合并式解析：把 CSV 行解析成 {city,scheme,type,...} 记录数组（不分组，便于按记录合并）
 function _parseCsvRecords(text){
   const rows = _parseCsv(text); const warns = []; const recs = [];
+  // 数字归一化：容忍千分位逗号；"不封顶/无上限"等文字 → null；空 → 比例/固定为 0、上下限为 null
+  const normNum = (s, nullWhenEmpty) => {
+    const t = (s || '').trim();
+    if (t === '') return nullWhenEmpty ? null : 0;
+    if (/不封顶|无上限|不限|不限制|none|n\/a/i.test(t)) return null;
+    return parseFloat(t.replace(/[,，\s]/g, ''));
+  };
+  // 日期归一化：2026/1/1、2026.1.1、2026-1-1 → 2026-01-01
+  const normDate = (s) => {
+    const t = (s || '').trim();
+    if (!t) return '';
+    const m = t.match(/^(\d{4})\s*[-/.\u5e74]\s*(\d{1,2})\s*[-/.\u6708]\s*(\d{1,2})/);
+    if (m) return m[1] + '-' + String(m[2]).padStart(2,'0') + '-' + String(m[3]).padStart(2,'0');
+    return t;
+  };
   for (const c of rows){
     if (c.length < 9){ warns.push('列数不足9：' + c.join(',')); continue; }
-    const [city, scheme, type, lo, hi, cr, pr, cf, pf] = c;
+    const [city, scheme, type] = c;
     if (!city.trim() || !scheme.trim() || !type.trim()){ warns.push('城市/方案/险种为空，已跳过：' + c.join(',')); continue; }
     const rec = {
       city: city.trim(), scheme: scheme.trim(), type: type.trim(),
-      lower: lo.trim() ? parseFloat(lo) : null,
-      upper: hi.trim() ? parseFloat(hi) : null,
-      company_rate: cr.trim() ? parseFloat(cr) : 0,
-      personal_rate: pr.trim() ? parseFloat(pr) : 0,
-      company_fixed: cf.trim() ? parseFloat(cf) : 0,
-      personal_fixed: pf.trim() ? parseFloat(pf) : 0,
-      effective_date: c.length >= 10 ? c[9].trim() : undefined   // 未提供时保留线上已有值
+      lower: normNum(c[3], true),
+      upper: normNum(c[4], true),
+      company_rate: normNum(c[5], false),
+      personal_rate: normNum(c[6], false),
+      company_fixed: normNum(c[7], false),
+      personal_fixed: normNum(c[8], false),
+      effective_date: c.length >= 10 ? normDate(c[9]) : undefined   // 未提供时保留线上已有值
     };
     const nums = [rec.lower, rec.upper, rec.company_rate, rec.personal_rate, rec.company_fixed, rec.personal_fixed];
-    if (nums.some(v => v !== null && isNaN(v))) warns.push('数值非法：' + c.join(','));
-    recs.push(rec);
+    if (nums.some(v => v !== null && isNaN(v))) warns.push('数值非法，该行未采用：' + c.join(','));
+    else recs.push(rec);
   }
   return { recs, warns };
 }
