@@ -728,8 +728,8 @@
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4986,
-          "upper": 25299,
+          "lower": 5122,
+          "upper": 25611,
           "company_rate": 0.16,
           "personal_rate": 0.08,
           "company_fixed": 0,
@@ -740,8 +740,8 @@
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4986,
-          "upper": 25299,
+          "lower": 5122,
+          "upper": 25611,
           "company_rate": 0.005,
           "personal_rate": 0.005,
           "company_fixed": 0,
@@ -752,8 +752,8 @@
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4986,
-          "upper": 25299,
+          "lower": 5122,
+          "upper": 25611,
           "company_rate": 0.002,
           "personal_rate": 0,
           "company_fixed": 0,
@@ -764,8 +764,8 @@
           "city": "杭州",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4986,
-          "upper": 25299,
+          "lower": 5122,
+          "upper": 25611,
           "company_rate": 0.095,
           "personal_rate": 0.02,
           "company_fixed": 0,
@@ -2118,9 +2118,8 @@
       "FEI_SHENZHEN_HUKOU": "非深圳户籍（非深户）"
     },
     "current": {
-      "v": "v4",
-      "effective": "2026.07–2027.06",
-      "date": "2026-10-13"
+      "v": "v5",
+      "effective": "2026.07–2027.06"
     },
     "versions": [
       {
@@ -2146,6 +2145,12 @@
         "date": "2026-10-13",
         "effective": "2026.07–2027.06",
         "note": "导入 2026-10-12 版规则：新增 10 城（石家庄、太原、呼和浩特、长春、哈尔滨、厦门、南昌、昆明、兰州、乌鲁木齐）；深圳共享险种同步至深户/非深户方案；其余城市基数、比例与险种生效日期同步更新。"
+      },
+      {
+        "v": "v5",
+        "date": "2026-10-15",
+        "effective": "2026.07–2027.06",
+        "note": "调整基数上小限"
       }
     ]
   }
