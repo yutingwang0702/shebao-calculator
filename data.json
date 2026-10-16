@@ -524,8 +524,8 @@
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4498,
-          "upper": 22488,
+          "lower": 4552,
+          "upper": 22761,
           "company_rate": 0.16,
           "personal_rate": 0.08,
           "company_fixed": 0,
@@ -536,8 +536,8 @@
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4498,
-          "upper": 22488,
+          "lower": 4552,
+          "upper": 22761,
           "company_rate": 0.007,
           "personal_rate": 0.003,
           "company_fixed": 0,
@@ -548,8 +548,8 @@
           "city": "武汉",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4498,
-          "upper": 22488,
+          "lower": 4552,
+          "upper": 22761,
           "company_rate": 0.002,
           "personal_rate": 0,
           "company_fixed": 0,
@@ -2118,7 +2118,7 @@
       "FEI_SHENZHEN_HUKOU": "非深圳户籍（非深户）"
     },
     "current": {
-      "v": "v5",
+      "v": "v6",
       "effective": "2026.07–2027.06"
     },
     "versions": [
@@ -2151,6 +2151,12 @@
         "date": "2026-10-15",
         "effective": "2026.07–2027.06",
         "note": "调整基数上小限"
+      },
+      {
+        "v": "v6",
+        "date": "2026-10-16",
+        "effective": "2026.07–2027.06",
+        "note": "调整养失工基数上小限"
       }
     ]
   }
