@@ -1188,8 +1188,8 @@
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "养老",
-          "lower": 4311,
-          "upper": 21556,
+          "lower": 4354,
+          "upper": 21772,
           "company_rate": 0.16,
           "personal_rate": 0.08,
           "company_fixed": 0,
@@ -1200,8 +1200,8 @@
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "失业",
-          "lower": 4311,
-          "upper": 21556,
+          "lower": 4354,
+          "upper": 21772,
           "company_rate": 0.005,
           "personal_rate": 0.005,
           "company_fixed": 0,
@@ -1212,8 +1212,8 @@
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "工伤",
-          "lower": 4311,
-          "upper": 21556,
+          "lower": 4354,
+          "upper": 21772,
           "company_rate": 0.004,
           "personal_rate": 0,
           "company_fixed": 0,
@@ -1224,8 +1224,8 @@
           "city": "合肥",
           "scheme": "STANDARD",
           "type": "医疗",
-          "lower": 4311,
-          "upper": 21556,
+          "lower": 4354,
+          "upper": 21772,
           "company_rate": 0.064,
           "personal_rate": 0.02,
           "company_fixed": 0,
@@ -2118,7 +2118,7 @@
       "FEI_SHENZHEN_HUKOU": "非深圳户籍（非深户）"
     },
     "current": {
-      "v": "v6",
+      "v": "v7",
       "effective": "2026.07–2027.06"
     },
     "versions": [
@@ -2157,6 +2157,12 @@
         "date": "2026-10-16",
         "effective": "2026.07–2027.06",
         "note": "调整五险基数上下限"
+      },
+      {
+        "v": "v7",
+        "date": "2026-10-23",
+        "effective": "2026.07–2027.06",
+        "note": "调整基数上下限"
       }
     ]
   }
